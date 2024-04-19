@@ -8,21 +8,40 @@ contextBridge.exposeInMainWorld("client", {
       listener(event, ...args)
     );
   },
+
   off(...args: Parameters<typeof ipcRenderer.off>) {
     const [channel, ...omit] = args;
     return ipcRenderer.off(channel, ...omit);
   },
+
   send(...args: Parameters<typeof ipcRenderer.send>) {
     const [channel, ...omit] = args;
     return ipcRenderer.send(channel, ...omit);
   },
+
   invoke(...args: Parameters<typeof ipcRenderer.invoke>) {
     const [channel, ...omit] = args;
     return ipcRenderer.invoke(channel, ...omit);
   },
-  // You can expose other APTs you need here.
-  // ...
-  connect: (settings: any) => {
-    ipcRenderer.send("warp:connect", { settings });
+
+  connect: (
+    settings: any,
+    callback: (e: Electron.IpcRendererEvent, args: any[]) => void
+  ) => {
+    ipcRenderer.send("warp:connect", settings);
+    ipcRenderer.on("warp:connected", callback);
   },
+
+  disconnect: () => {
+    ipcRenderer.send("warp:disconnect");
+  },
+
+  quit: () => {
+    ipcRenderer.send("app:quit");
+  },
+
+  logs: (callback: (e: any, data: any) => void) => {
+    ipcRenderer.on("logs", callback);
+  },
+
 });

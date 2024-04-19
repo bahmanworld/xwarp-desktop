@@ -1,10 +1,9 @@
 import { usePanelStack } from "../stores/useStack";
 import SettingsPanel from "./SettingsPanel";
-import { Github, Info, Settings, Terminal, X } from "lucide-react";
-import { Button, ButtonGroup } from "@blueprintjs/core";
+import { Github, HardDriveDownload, Info, Settings, Terminal, X } from "lucide-react";
+import { Button, ButtonGroup, Tooltip } from "@blueprintjs/core";
 import AppLogo from "/logo.png";
 import ConnectIcon from "/connect.png";
-import ConnectingIcon from "/connecting.png";
 import ConnectedIcon from "/connected.png";
 import { useWarp } from "../stores/useWarp";
 import PackageJSON from "../../package.json";
@@ -67,7 +66,9 @@ const HomePanel = () => {
               }}
             />
             <div>
-              <div style={{fontSize: 20, fontWeight: 'bold'}}>XWarp Client</div>
+              <div style={{ fontSize: 20, fontWeight: "bold" }}>
+                XWarp Client
+              </div>
               <div style={{ fontSize: 10, opacity: 0.4 }}>
                 Version {PackageJSON.version}
               </div>
@@ -135,46 +136,79 @@ const HomePanel = () => {
             )}
           </button>
         </div>
-
+        <div
+          style={{
+            width: "100%",
+            fontSize: 10,
+            textAlign: "center",
+            padding: 5,
+            wordBreak: "break-word",
+          }}
+        >
+          {warp.logs || ""}
+        </div>
         <ButtonGroup minimal style={{ marginBottom: 10 }}>
-          <Button
-            onClick={() => {
-              alert("info");
-            }}
-          >
-            <Info size={18} style={{ marginBottom: -4 }} />
-          </Button>
-          <Button
-            onClick={() => {
-              alert("log");
-            }}
-          >
-            <Terminal size={18} style={{ marginBottom: -4 }} />
-          </Button>
-          <Button
-            onClick={() => {
-              alert("github");
-            }}
-          >
-            <Github size={18} style={{ marginBottom: -4 }} />
-          </Button>
-          <Button
-            onClick={() => {
-              stack.push({
-                renderPanel: SettingsPanel,
-              });
-            }}
-          >
-            <Settings size={18} style={{ marginBottom: -4 }} />
-          </Button>
-          <Button
-            intent="danger"
-            onClick={() => {
-              alert("close");
-            }}
-          >
-            <X size={18} style={{ marginBottom: -4 }} />
-          </Button>
+          <Tooltip compact content={"About..."}>
+            <Button
+              onClick={() => {
+                alert("info");
+              }}
+            >
+              <Info size={18} style={{ marginBottom: -4 }} />
+            </Button>
+          </Tooltip>
+          <Tooltip compact content={"Logs"}>
+            <Button
+              onClick={() => {
+                alert("log");
+              }}
+            >
+              <Terminal size={18} style={{ marginBottom: -4 }} />
+            </Button>
+          </Tooltip>
+          <Tooltip compact content={"Github Repository"}>
+            <Button
+              onClick={() => {
+                alert("github");
+              }}
+            >
+              <Github size={18} style={{ marginBottom: -4 }} />
+            </Button>
+          </Tooltip>
+          <Tooltip compact content={"Settings"}>
+            <Button
+              onClick={() => {
+                stack.push({
+                  renderPanel: SettingsPanel,
+                });
+              }}
+            >
+              <Settings size={18} style={{ marginBottom: -4 }} />
+            </Button>
+          </Tooltip>
+          <Tooltip compact content={"Update Core"}>
+            <Button
+              onClick={() => {
+                stack.push({
+                  renderPanel: SettingsPanel,
+                });
+              }}
+            >
+              <HardDriveDownload size={18} style={{ marginBottom: -4 }} />
+            </Button>
+          </Tooltip>
+          <Tooltip compact intent="danger" content={"Force Quit"}>
+            <Button
+              intent="danger"
+              onClick={() => {
+                if (confirm("Force Quit Application?")) {
+                  window.client.quit();
+                }
+              }}
+            >
+              <X size={18} style={{ marginBottom: -4 }} />
+            </Button>
+          </Tooltip>
         </ButtonGroup>
 
         <div

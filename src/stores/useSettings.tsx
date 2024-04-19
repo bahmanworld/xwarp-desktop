@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { useWarp } from "./useWarp";
-import { PersistOptions, PersistStorage, StorageValue } from "zustand/middleware";
+import { persist } from "zustand/middleware";
 
 export const Countries = [
   { id: "AT", name: "Austria" },
@@ -47,43 +47,52 @@ type Fields = {
 interface ISettings extends Fields {
   saving: boolean;
   updateField: (key: keyof Fields, value: typeof key | any) => void;
-  getSettings: () => any;
+  getSettings: () => Fields;
   resetSettings: () => void;
 }
 
-export const useSettings = create<ISettings>()((set, get) => ({
-  endpoint: "",
-  key: "",
-  port: 8086,
-  psiphon: false,
-  counrty: "US",
-  gool: false,
-  saving: false,
-  updateField: (key, value) => {
-    set({ ...get(), [key]: value, saving: true });
-    setTimeout(() => {
-      set({ ...get(), saving: false });
-      useWarp.getState().disconnect();
-    }, 250);
-  },
-  getSettings: (): Fields => {
-    return {
-      endpoint: get().endpoint,
-      key: get().key,
-      port: get().port,
-      psiphon: get().psiphon,
-      counrty: get().counrty,
-      gool: get().gool,
-    };
-  },
-  resetSettings: () => {
-    set({
+export const useSettings = create<ISettings>()(
+  persist(
+    (set, get) => ({
       endpoint: "",
       key: "",
       port: 8086,
       psiphon: false,
       counrty: "US",
       gool: false,
-    });
-  },
-}));
+      saving: false,
+      updateField: (key, value) => {
+        set({ ...get(), [key]: value, saving: true });
+        setTimeout(() => {
+          set({ ...get(), saving: false });
+          useWarp.getState().disconnect();
+          window.client.disconnect();
+        }, 100);
+      },
+      getSettings: () => {
+        return {
+          endpoint: get().endpoint,
+          key: get().key,
+          port: get().port,
+          psiphon: get().psiphon,
+          counrty: get().counrty,
+          gool: get().gool,
+        };
+      },
+      resetSettings: () => {
+        set({
+          endpoint: "",
+          key: "",
+          port: 8086,
+          psiphon: false,
+          counrty: "US",
+          gool: false,
+        });
+      },
+    }),
+    {
+      name: "settings",
+      // storage: ElectronStorage,
+    }
+  )
+);

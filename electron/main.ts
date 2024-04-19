@@ -1,8 +1,6 @@
 import { app, BrowserWindow, ipcMain, Tray } from "electron";
-import ElectronStore from "electron-store";
 import path from "node:path";
-
-const settingsStore = new ElectronStore()
+import childProcess from "child_process";
 
 process.env.DIST = path.join(__dirname, "../dist");
 process.env.VITE_PUBLIC = app.isPackaged
@@ -39,12 +37,12 @@ function createWindow() {
     win?.webContents.send("main-process-message", new Date().toLocaleString());
   });
 
-  if (!VITE_DEV_SERVER_URL) {
-    win.on("close", function (evt) {
-      evt.preventDefault();
-      app.hide();
-    });
-  }
+  // if (!VITE_DEV_SERVER_URL) {
+  win.on("close", function (evt) {
+    evt.preventDefault();
+    app.hide();
+  });
+  // }
 
   new Tray(path.join(process.env.VITE_PUBLIC, "logo.png"));
 
@@ -72,10 +70,33 @@ app.whenReady().then(() => {
   createWindow();
 });
 
+let cli: childProcess.ChildProcessWithoutNullStreams | null = null;
+
 ipcMain.on("warp:connect", (_, settings) => {
-  console.log(settings.settings);
+  console.log(settings);
+  cli = childProcess.spawn("ping", ["localhost"]);
+  cli.stdout.setEncoding("utf8");
+  cli.stdout.on("data", (data) => {
+    console.log(data);
+    win?.webContents.send("logs", data);
+  });
+  cli.stdout.once("data", () => {
+    console.log("once data");
+    win?.webContents.send("warp:connected", true);
+  });
+  cli.on("error", () => {
+    console.log("error");
+    cli?.kill();
+    win?.webContents.send("warp:connected", false);
+  });
 });
 
-ipcMain.on('settings:set', (_, key, value)=>{
-  settingsStore.set(key, value)
-})
+ipcMain.on("warp:disconnect", () => {
+  console.log("disconnected");
+  cli?.kill();
+});
+
+ipcMain.on("app:quit", () => {
+  cli?.kill()
+  app.exit()
+});
