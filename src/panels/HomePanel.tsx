@@ -1,14 +1,19 @@
-import React from "react";
-import ConnectIcon from "./../assets/connect.png";
 import { usePanelStack } from "../stores/useStack";
 import SettingsPanel from "./SettingsPanel";
-import { Info, Settings, Settings2 } from "lucide-react";
-import { Button } from "@blueprintjs/core";
+import { Github, Info, Settings, Terminal, X } from "lucide-react";
+import { Button, ButtonGroup } from "@blueprintjs/core";
+import AppLogo from "/logo.png";
+import ConnectIcon from "/connect.png";
+import ConnectingIcon from "/connecting.png";
+import ConnectedIcon from "/connected.png";
+import { useWarp } from "../stores/useWarp";
+import PackageJSON from "../../package.json";
 
 const HomePanel = () => {
-  const [connecting, setConnecting] = React.useState(false);
-  const [connected, setConnected] = React.useState(false);
+  // const [connecting, setConnecting] = React.useState(false);
+  // const [connected, setConnected] = React.useState(false);
 
+  const warp = useWarp();
   const stack = usePanelStack();
 
   return (
@@ -26,7 +31,8 @@ const HomePanel = () => {
           width: "100%",
           height: "100vh",
           display: "flex",
-          padding: 10,
+          padding: 15,
+          paddingTop: 40,
           flexDirection: "column",
           justifyItems: "center",
           alignItems: "center",
@@ -37,33 +43,39 @@ const HomePanel = () => {
             width: "100%",
             display: "flex",
             alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "column",
             gap: 5,
           }}
         >
-          <div>
-            <h3 style={{ margin: 0 }}>XWarp Client</h3>
-            <div style={{ fontSize: 10, opacity: 0.4 }}>Version 1.5.33</div>
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "row",
+              gap: 10,
+            }}
+          >
+            <img
+              src={AppLogo}
+              style={{
+                width: 50,
+                height: 50,
+                borderRadius: 10,
+              }}
+            />
+            <div>
+              <div style={{fontSize: 20, fontWeight: 'bold'}}>XWarp Client</div>
+              <div style={{ fontSize: 10, opacity: 0.4 }}>
+                Version {PackageJSON.version}
+              </div>
+              <div style={{ fontSize: 10, opacity: 0.4 }}>
+                Designed by <a href="#">Bahman World</a>
+              </div>
+            </div>
           </div>
-          <div style={{ flex: 1 }} />
-          <Button
-            minimal
-            onClick={() => {
-              stack.push({
-                renderPanel: SettingsPanel,
-              });
-            }}
-          >
-            <Info size={18} style={{ marginBottom: -3 }} />
-          </Button>
-          <Button
-            onClick={() => {
-              stack.push({
-                renderPanel: SettingsPanel,
-              });
-            }}
-          >
-            <Settings size={18} style={{ marginBottom: -3 }} />
-          </Button>
         </div>
         <div
           style={{
@@ -76,50 +88,106 @@ const HomePanel = () => {
         >
           <button
             className={`big-button ${
-              connecting ? "connecting" : connected ? "connected" : ""
+              warp.connecting ? "connecting" : warp.connected ? "connected" : ""
             }`}
             onClick={() => {
-              if (connected) {
-                setConnected(false);
-                setConnecting(false);
-                return;
+              if (warp.connected) {
+                warp.disconnect();
+              } else {
+                warp.connect();
               }
-              setConnecting(!connecting);
-              setTimeout(() => {
-                setConnected(true);
-                setConnecting(false);
-              }, 3000);
             }}
           >
-            {!connecting && (
-              <div>
-                {!connected && (
-                  <img className="idle-animating" src={ConnectIcon} style={{ width: 60, height: 60 }} />
-                )}
-                {connected && <div style={{ fontSize: 60 }}>🎉</div>}
-              </div>
+            {warp.connecting && (
+              <img
+                src={ConnectingIcon}
+                style={{
+                  width: 100,
+                  height: "auto",
+                }}
+                className={warp.connecting ? "animating" : ""}
+              />
             )}
-            {connecting && (
-              <div style={{ fontWeight: "bold" }}>
-                <div
-                  className={connecting ? "animating" : ""}
-                  style={{ fontSize: 60 }}
-                >
-                  {connected ? "👋🏻" : "🚀"}
-                </div>
+            {!warp.connecting && (
+              <div>
+                {!warp.connected && (
+                  <img
+                    className="idle-animating"
+                    src={ConnectIcon}
+                    style={{
+                      width: 75,
+                      height: 75,
+                      filter: "drop-shadow(2px 3px 15px #0005)",
+                    }}
+                  />
+                )}
+                {warp.connected && (
+                  <img
+                    src={ConnectedIcon}
+                    style={{
+                      width: 130,
+                      height: 130,
+                      filter: "drop-shadow(5px 10px 15px #0006)",
+                    }}
+                  />
+                )}
               </div>
             )}
           </button>
         </div>
+
+        <ButtonGroup minimal style={{ marginBottom: 10 }}>
+          <Button
+            onClick={() => {
+              alert("info");
+            }}
+          >
+            <Info size={18} style={{ marginBottom: -4 }} />
+          </Button>
+          <Button
+            onClick={() => {
+              alert("log");
+            }}
+          >
+            <Terminal size={18} style={{ marginBottom: -4 }} />
+          </Button>
+          <Button
+            onClick={() => {
+              alert("github");
+            }}
+          >
+            <Github size={18} style={{ marginBottom: -4 }} />
+          </Button>
+          <Button
+            onClick={() => {
+              stack.push({
+                renderPanel: SettingsPanel,
+              });
+            }}
+          >
+            <Settings size={18} style={{ marginBottom: -4 }} />
+          </Button>
+          <Button
+            intent="danger"
+            onClick={() => {
+              alert("close");
+            }}
+          >
+            <X size={18} style={{ marginBottom: -4 }} />
+          </Button>
+        </ButtonGroup>
+
         <div
           style={{
             fontSize: 10,
-            color: "#999",
+            opacity: 0.4,
             textAlign: "center",
           }}
         >
           <div>Dahatu, Inc</div>
-          <div>©2024-2025</div>
+          <div style={{ fontSize: 8 }}>
+            Copyright ©{new Date(Date.now()).getFullYear()}
+          </div>
         </div>
       </div>
     </div>

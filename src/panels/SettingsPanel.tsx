@@ -1,6 +1,14 @@
-import { Check, ChevronLeft } from "lucide-react";
+import { Check, RefreshCcw, Settings } from "lucide-react";
 import { usePanelStack } from "../stores/useStack";
-import { Button, Checkbox, HTMLSelect, InputGroup } from "@blueprintjs/core";
+import {
+  Button,
+  ButtonGroup,
+  Checkbox,
+  HTMLSelect,
+  InputGroup,
+  NumericInput,
+  Spinner,
+} from "@blueprintjs/core";
 import { Countries, useSettings } from "../stores/useSettings";
 
 const SettingsPanel = () => {
@@ -22,7 +30,8 @@ const SettingsPanel = () => {
           width: "100%",
           height: "100vh",
           display: "flex",
-          padding: 10,
+          padding: 20,
+          paddingTop: 40,
           flexDirection: "column",
           justifyItems: "center",
           alignItems: "center",
@@ -32,39 +41,43 @@ const SettingsPanel = () => {
           style={{
             width: "100%",
             display: "flex",
-            gap: 10,
+            gap: 5,
             alignItems: "center",
           }}
         >
-          <Button
-            minimal
-            onClick={() => {
-              stack.pop();
-            }}
-          >
-            <ChevronLeft size={18} style={{ marginBottom: -3 }} />
-          </Button>
+          <Settings size={32} style={{ opacity: 0.2 }} strokeWidth={1.5} />
           <div>
             <h3 style={{ margin: 0 }}>Settings</h3>
             <div style={{ fontSize: 10, opacity: 0.4 }}>Warp Plus Configs</div>
           </div>
           <div style={{ flex: 1 }} />
-          <Button
-            intent="success"
-            onClick={() => {
-              stack.pop();
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
-              <Check size={18} />
-              <span>Done</span>
-            </div>
-          </Button>
+          {settings.saving && <Spinner intent="primary" size={15} />}
+          <ButtonGroup>
+            <Button
+              onClick={() => {
+                settings.resetSettings();
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
+                <RefreshCcw size={18} />
+              </div>
+            </Button>
+            <Button
+              intent="success"
+              onClick={() => {
+                stack.pop();
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
+                <Check size={18} />
+                <span>Done</span>
+              </div>
+            </Button>
+          </ButtonGroup>
         </div>
         <div
           style={{
             width: "100%",
-            paddingInline: 5,
             marginTop: 20,
             display: "flex",
             flexDirection: "column",
@@ -75,19 +88,45 @@ const SettingsPanel = () => {
           <div>
             <div style={{ marginBottom: 3 }}>Endpoint</div>
             <div>
-              <InputGroup fill value={settings.endpoint} />
+              <InputGroup
+                autoFocus
+                placeholder={"engage.cloudflareclient.com:2408"}
+                fill
+                value={settings.endpoint}
+                onChange={(e) => {
+                  settings.updateField("endpoint", e.target.value);
+                }}
+              />
             </div>
           </div>
           <div>
             <div style={{ marginBottom: 3 }}>Key</div>
             <div>
-              <InputGroup fill value={settings.key} />
+              <InputGroup
+                placeholder="bG2183MW-W1zJ8Z93-39A2ZiS5"
+                fill
+                value={settings.key}
+                onChange={(e) => {
+                  settings.updateField("key", e.target.value);
+                }}
+              />
             </div>
           </div>
           <div>
             <div style={{ marginBottom: 3 }}>Port</div>
             <div>
-              <InputGroup fill value={settings.port.toString()} />
+              <NumericInput
+                placeholder="8086"
+                fill
+                min={1000}
+                onButtonClick={(e) => {
+                  settings.updateField("port", e);
+                }}
+                value={settings.port}
+                onChange={(e) => {
+                  settings.updateField("port", e.target.value);
+                }}
+              />
             </div>
           </div>
           <div
@@ -106,7 +145,7 @@ const SettingsPanel = () => {
                 checked={settings.psiphon}
                 onChange={(e) => {
                   settings.updateField("psiphon", e.target.checked);
-                  settings.updateField('gool', false)
+                  settings.updateField("gool", false);
                 }}
               />
             </div>
@@ -117,7 +156,7 @@ const SettingsPanel = () => {
           </div>
           {settings.psiphon && (
             <div>
-              <div style={{ marginBottom: 3 }}>Destination Country</div>
+              <div style={{ marginBottom: 3 }}>Country</div>
               <div>
                 <HTMLSelect
                   fill
@@ -127,7 +166,10 @@ const SettingsPanel = () => {
                 >
                   {Countries.map((country) => {
                     return (
-                      <option value={country.id} selected={country.id == settings.counrty}>
+                      <option
+                        value={country.id}
+                        selected={country.id == settings.counrty}
+                      >
                         {country.name} ({country.id})
                       </option>
                     );
@@ -147,10 +189,14 @@ const SettingsPanel = () => {
             }}
           >
             <div>
-              <Checkbox id="gool" checked={settings.gool} onChange={e=>{
-                settings.updateField('gool', e.target.checked)
-                settings.updateField('psiphon', false)
-              }} />
+              <Checkbox
+                id="gool"
+                checked={settings.gool}
+                onChange={(e) => {
+                  settings.updateField("gool", e.target.checked);
+                  settings.updateField("psiphon", false);
+                }}
+              />
             </div>
             <label htmlFor="gool">
               <div style={{ fontWeight: "bold" }}>Gool</div>

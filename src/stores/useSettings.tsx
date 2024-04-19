@@ -1,4 +1,6 @@
 import { create } from "zustand";
+import { useWarp } from "./useWarp";
+import { PersistOptions, PersistStorage, StorageValue } from "zustand/middleware";
 
 export const Countries = [
   { id: "AT", name: "Austria" },
@@ -43,17 +45,45 @@ type Fields = {
 };
 
 interface ISettings extends Fields {
+  saving: boolean;
   updateField: (key: keyof Fields, value: typeof key | any) => void;
+  getSettings: () => any;
+  resetSettings: () => void;
 }
 
 export const useSettings = create<ISettings>()((set, get) => ({
-  endpoint: "engage.cloudflareclient.com:2408",
+  endpoint: "",
   key: "",
   port: 8086,
   psiphon: false,
   counrty: "US",
   gool: false,
+  saving: false,
   updateField: (key, value) => {
-    set({ ...get(), [key]: value });
+    set({ ...get(), [key]: value, saving: true });
+    setTimeout(() => {
+      set({ ...get(), saving: false });
+      useWarp.getState().disconnect();
+    }, 250);
+  },
+  getSettings: (): Fields => {
+    return {
+      endpoint: get().endpoint,
+      key: get().key,
+      port: get().port,
+      psiphon: get().psiphon,
+      counrty: get().counrty,
+      gool: get().gool,
+    };
+  },
+  resetSettings: () => {
+    set({
+      endpoint: "",
+      key: "",
+      port: 8086,
+      psiphon: false,
+      counrty: "US",
+      gool: false,
+    });
   },
 }));
