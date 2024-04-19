@@ -2,14 +2,14 @@ import { create } from "zustand";
 import { useSettings } from "./useSettings";
 
 type WarpProps = {
-  logs: any;
+  logs: string[];
   connected: boolean;
   connecting: boolean;
   connect: () => void;
   disconnect: () => void;
 };
 export const useWarp = create<WarpProps>()((set, get) => ({
-  logs: null,
+  logs: [],
   connected: false,
   connecting: false,
   connect: () => {
@@ -25,7 +25,7 @@ export const useWarp = create<WarpProps>()((set, get) => ({
         if (connected) {
           set({ connected: true, connecting: false });
           window.client.logs((_, data) => {
-            set({ logs: data });
+            set({ logs: [...get().logs, data] });
           });
         } else {
           set({ connected: false, connecting: false });
@@ -34,7 +34,7 @@ export const useWarp = create<WarpProps>()((set, get) => ({
     );
   },
   disconnect: () => {
-    set({ logs: null, connected: false, connecting: false });
+    set({ logs: [], connected: false, connecting: false });
     window.client.disconnect();
   },
 }));
