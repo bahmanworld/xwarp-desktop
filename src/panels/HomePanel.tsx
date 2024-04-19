@@ -100,9 +100,9 @@ const HomePanel = () => {
           >
             {warp.connecting && (
               <img
-                src={ConnectingIcon}
+                src={ConnectIcon}
                 style={{
-                  width: 100,
+                  width: 75,
                   height: "auto",
                 }}
                 className={warp.connecting ? "animating" : ""}
@@ -112,7 +112,7 @@ const HomePanel = () => {
               <div>
                 {!warp.connected && (
                   <img
-                    className="idle-animating"
+                    // className="idle-animating"
                     src={ConnectIcon}
                     style={{
                       width: 75,
