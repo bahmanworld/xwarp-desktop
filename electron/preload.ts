@@ -24,6 +24,24 @@ contextBridge.exposeInMainWorld("client", {
     return ipcRenderer.invoke(channel, ...omit);
   },
 
+  settings: {
+    set: (key: string, value: unknown) => {
+      ipcRenderer.send("settings:set", key, value);
+    },
+
+    get: (key: string) => {
+      return ipcRenderer.sendSync("settings:get", key);
+    },
+
+    delete: (key: string) => {
+      ipcRenderer.send("settings:delete", key);
+    },
+
+    clear: () => {
+      ipcRenderer.send("settings:clear");
+    },
+  },
+
   connect: (
     settings: any,
     callback: (e: Electron.IpcRendererEvent, args: any[]) => void
@@ -43,5 +61,4 @@ contextBridge.exposeInMainWorld("client", {
   logs: (callback: (e: any, data: any) => void) => {
     ipcRenderer.on("logs", callback);
   },
-
 });

@@ -18,10 +18,11 @@ interface Window {
     disconnect: () => void;
     logs: (callback: (e: any, data: any) => void) => void;
     quit: () => void;
-    // settings: {
-    //   set: (key: string, value: any) => void;
-    //   get: (key: string) => any;
-    //   delete: (key: string) => void;
-    // };
+    settings: {
+      set: (key: string, value: unknown) => void;
+      get: (key: string) => any;
+      delete: (key: string) => void;
+      clear: () => void;
+    };
   };
 }

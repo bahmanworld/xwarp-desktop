@@ -1,6 +1,13 @@
 import { usePanelStack } from "../stores/useStack";
 import SettingsPanel from "./SettingsPanel";
-import { Github, HardDriveDownload, Info, Settings, Terminal, X } from "lucide-react";
+import {
+  Github,
+  HardDriveDownload,
+  Info,
+  Settings,
+  Terminal,
+  X,
+} from "lucide-react";
 import { Button, ButtonGroup, Tooltip } from "@blueprintjs/core";
 import AppLogo from "/logo.png";
 import ConnectIcon from "/connect.png";
@@ -9,9 +16,6 @@ import { useWarp } from "../stores/useWarp";
 import PackageJSON from "../../package.json";
 
 const HomePanel = () => {
-  // const [connecting, setConnecting] = React.useState(false);
-  // const [connected, setConnected] = React.useState(false);
-
   const warp = useWarp();
   const stack = usePanelStack();
 

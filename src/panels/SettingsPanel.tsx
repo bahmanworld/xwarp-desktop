@@ -51,11 +51,12 @@ const SettingsPanel = () => {
             <div style={{ fontSize: 10, opacity: 0.4 }}>Warp Plus Configs</div>
           </div>
           <div style={{ flex: 1 }} />
-          {settings.saving && <Spinner intent="primary" size={15} />}
           <ButtonGroup>
             <Button
               onClick={() => {
-                settings.resetSettings();
+                if (confirm("Reset Configs?")) {
+                  settings.resetSettings();
+                }
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 3 }}>

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { useWarp } from "./useWarp";
-import { persist } from "zustand/middleware";
+import { PersistStorage, persist } from "zustand/middleware";
 
 export const Countries = [
   { id: "AT", name: "Austria" },
@@ -45,54 +45,46 @@ type Fields = {
 };
 
 interface ISettings extends Fields {
-  saving: boolean;
   updateField: (key: keyof Fields, value: typeof key | any) => void;
   getSettings: () => Fields;
   resetSettings: () => void;
 }
 
-export const useSettings = create<ISettings>()(
-  persist(
-    (set, get) => ({
+export const useSettings = create<ISettings>()((set, get) => ({
+  endpoint: window.client.settings.get("endpoint") || "",
+  key: window.client.settings.get("key") || "",
+  port: window.client.settings.get("port") || 8086,
+  psiphon: window.client.settings.get("psiphon") || false,
+  counrty: window.client.settings.get("country") || "US",
+  gool: window.client.settings.get("gool") || false,
+  updateField: (key, value) => {
+    set({ [key]: value });
+    window.client.settings.set(key, value);
+    setTimeout(() => {
+      set({ ...get() });
+      useWarp.getState().disconnect();
+      window.client.disconnect();
+    }, 100);
+  },
+  getSettings: () => {
+    return {
+      endpoint: get().endpoint,
+      key: get().key,
+      port: get().port,
+      psiphon: get().psiphon,
+      counrty: get().counrty,
+      gool: get().gool,
+    };
+  },
+  resetSettings: () => {
+    window.client.settings.clear();
+    set({
       endpoint: "",
       key: "",
       port: 8086,
       psiphon: false,
       counrty: "US",
       gool: false,
-      saving: false,
-      updateField: (key, value) => {
-        set({ ...get(), [key]: value, saving: true });
-        setTimeout(() => {
-          set({ ...get(), saving: false });
-          useWarp.getState().disconnect();
-          window.client.disconnect();
-        }, 100);
-      },
-      getSettings: () => {
-        return {
-          endpoint: get().endpoint,
-          key: get().key,
-          port: get().port,
-          psiphon: get().psiphon,
-          counrty: get().counrty,
-          gool: get().gool,
-        };
-      },
-      resetSettings: () => {
-        set({
-          endpoint: "",
-          key: "",
-          port: 8086,
-          psiphon: false,
-          counrty: "US",
-          gool: false,
-        });
-      },
-    }),
-    {
-      name: "settings",
-      // storage: ElectronStorage,
-    }
-  )
-);
+    });
+  },
+}));
