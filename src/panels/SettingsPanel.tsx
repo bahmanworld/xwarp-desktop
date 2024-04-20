@@ -7,7 +7,6 @@ import {
   HTMLSelect,
   InputGroup,
   NumericInput,
-  Spinner,
 } from "@blueprintjs/core";
 import { Countries, useSettings } from "../stores/useSettings";
 
@@ -31,7 +30,7 @@ const SettingsPanel = () => {
           height: "100vh",
           display: "flex",
           padding: 20,
-          paddingTop: 40,
+          // paddingTop: 40,
           flexDirection: "column",
           justifyItems: "center",
           alignItems: "center",
@@ -162,14 +161,14 @@ const SettingsPanel = () => {
                 <HTMLSelect
                   fill
                   onChange={(e) => {
-                    settings.updateField("counrty", e.target.value);
+                    settings.updateField("country", e.target.value);
                   }}
                 >
                   {Countries.map((country) => {
                     return (
                       <option
                         value={country.id}
-                        selected={country.id == settings.counrty}
+                        selected={country.id == settings.country}
                       >
                         {country.name} ({country.id})
                       </option>

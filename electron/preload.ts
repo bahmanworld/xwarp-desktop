@@ -58,7 +58,23 @@ contextBridge.exposeInMainWorld("client", {
     ipcRenderer.send("app:quit");
   },
 
-  logs: (callback: (e: any, data: any) => void) => {
-    ipcRenderer.on("logs", callback);
+  // logs: (callback: (data: any) => void) => {
+  //   ipcRenderer.on("logs", (_, logs) => {
+  //     callback(logs);
+  //   });
+  // },
+
+  openExternalLink: (url: string) => {
+    ipcRenderer.send("link:open", url);
+  },
+
+  download: (callback: (error: Error | null, finished: boolean) => void) => {
+    ipcRenderer.send("download:start");
+    ipcRenderer.on("download:done", (_) => {
+      callback(null, true);
+    });
+    ipcRenderer.on("download:error", () => {
+      callback(new Error("download field"), false);
+    });
   },
 });

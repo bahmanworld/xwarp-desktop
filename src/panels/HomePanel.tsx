@@ -1,19 +1,13 @@
 import { usePanelStack } from "../stores/useStack";
 import SettingsPanel from "./SettingsPanel";
-import {
-  Github,
-  HardDriveDownload,
-  Info,
-  Settings,
-  Terminal,
-  X,
-} from "lucide-react";
+import { Github, HardDriveDownload, Info, Settings, X } from "lucide-react";
 import { Button, ButtonGroup, Tooltip } from "@blueprintjs/core";
 import AppLogo from "/logo.png";
-import ConnectIcon from "/connect.png";
+import ConnectionIcon from "/connection.png";
 import ConnectedIcon from "/connected.png";
 import { useWarp } from "../stores/useWarp";
 import PackageJSON from "../../package.json";
+import React from "react";
 
 const HomePanel = () => {
   const warp = useWarp();
@@ -34,8 +28,8 @@ const HomePanel = () => {
           width: "100%",
           height: "100vh",
           display: "flex",
-          padding: 15,
-          paddingTop: 40,
+          padding: 10,
+          paddingTop: 15,
           flexDirection: "column",
           justifyItems: "center",
           alignItems: "center",
@@ -64,9 +58,9 @@ const HomePanel = () => {
             <img
               src={AppLogo}
               style={{
-                width: 50,
-                height: 50,
-                borderRadius: 10,
+                width: 40,
+                height: 40,
+                borderRadius: 100,
               }}
             />
             <div>
@@ -75,9 +69,6 @@ const HomePanel = () => {
               </div>
               <div style={{ fontSize: 10, opacity: 0.4 }}>
                 Version {PackageJSON.version}
-              </div>
-              <div style={{ fontSize: 10, opacity: 0.4 }}>
-                Designed by <a href="#">Bahman World</a>
               </div>
             </div>
           </div>
@@ -103,26 +94,15 @@ const HomePanel = () => {
               }
             }}
           >
-            {warp.connecting && (
-              <img
-                src={ConnectIcon}
-                style={{
-                  width: 75,
-                  height: "auto",
-                }}
-                className={warp.connecting ? "animating" : ""}
-              />
-            )}
             {!warp.connecting && (
               <div>
                 {!warp.connected && (
                   <img
-                    // className="idle-animating"
-                    src={ConnectIcon}
+                    src={ConnectionIcon}
                     style={{
-                      width: 75,
-                      height: 75,
-                      filter: "drop-shadow(2px 3px 15px #0005)",
+                      width: 100,
+                      height: 100,
+                      filter: "drop-shadow(5px 5px 15px #000a)",
                     }}
                   />
                 )}
@@ -138,19 +118,19 @@ const HomePanel = () => {
                 )}
               </div>
             )}
+            {warp.connecting && (
+              <img
+                src={ConnectionIcon}
+                style={{
+                  width: 100,
+                  height: "auto",
+                }}
+                className={warp.connecting ? "animating" : ""}
+              />
+            )}
           </button>
         </div>
-        <div
-          style={{
-            width: "100%",
-            fontSize: 10,
-            textAlign: "center",
-            padding: 5,
-            wordBreak: "break-word",
-          }}
-        >
-          {warp.logs || ""}
-        </div>
+        <div>{warp.logs || ''}</div>
         <ButtonGroup minimal style={{ marginBottom: 10 }}>
           <Tooltip compact content={"About..."}>
             <Button
@@ -161,19 +141,12 @@ const HomePanel = () => {
               <Info size={18} style={{ marginBottom: -4 }} />
             </Button>
           </Tooltip>
-          <Tooltip compact content={"Logs"}>
-            <Button
-              onClick={() => {
-                alert("log");
-              }}
-            >
-              <Terminal size={18} style={{ marginBottom: -4 }} />
-            </Button>
-          </Tooltip>
           <Tooltip compact content={"Github Repository"}>
             <Button
               onClick={() => {
-                alert("github");
+                window.client.openExternalLink(
+                  "https://github.com/bahmanworld/xwarp-client"
+                );
               }}
             >
               <Github size={18} style={{ marginBottom: -4 }} />
@@ -188,17 +161,6 @@ const HomePanel = () => {
               }}
             >
               <Settings size={18} style={{ marginBottom: -4 }} />
-            </Button>
-          </Tooltip>
-          <Tooltip compact content={"Update Core"}>
-            <Button
-              onClick={() => {
-                stack.push({
-                  renderPanel: SettingsPanel,
-                });
-              }}
-            >
-              <HardDriveDownload size={18} style={{ marginBottom: -4 }} />
             </Button>
           </Tooltip>
           <Tooltip compact intent="danger" content={"Force Quit"}>
@@ -218,7 +180,7 @@ const HomePanel = () => {
         <div
           style={{
             fontSize: 10,
-            opacity: 0.4,
+            opacity: 0.2,
             textAlign: "center",
           }}
         >

@@ -1,7 +1,9 @@
-import { app, BrowserWindow, ipcMain, Tray } from "electron";
+import { app, BrowserWindow, ipcMain, Tray, shell } from "electron";
 import path from "node:path";
 import childProcess from "child_process";
+import fs from "fs";
 import { Storage } from "./Storage";
+import { download } from "./utils";
 
 process.env.DIST = path.join(__dirname, "../dist");
 process.env.VITE_PUBLIC = app.isPackaged
@@ -12,17 +14,16 @@ let win: BrowserWindow | null;
 // 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
 const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
 
-const WIDTH = 350;
-const HEIGHT = 600;
+const WIDTH = 320;
+const HEIGHT = 550;
 
 function createWindow() {
   win = new BrowserWindow({
-    icon: path.join(process.env.VITE_PUBLIC, "logo.png"),
+    icon: process.env.VITE_PUBLIC + "logo.png",
     maximizable: false,
     fullscreenable: false,
     center: true,
     resizable: false,
-    titleBarStyle: "hidden",
     width: WIDTH,
     height: HEIGHT,
     minWidth: WIDTH,
@@ -45,8 +46,6 @@ function createWindow() {
     });
   }
 
-  new Tray(path.join(process.env.VITE_PUBLIC, "logo.png"));
-
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL);
   } else {
@@ -67,43 +66,79 @@ app.on("activate", () => {
   }
 });
 
-app.whenReady().then(() => {
-  createWindow();
+app.whenReady().then(createWindow);
+
+ipcMain.on("link:open", (_, url) => {
+  shell.openExternal(url);
 });
 
 let cli: childProcess.ChildProcessWithoutNullStreams | null = null;
 
-ipcMain.on("warp:connect", (_, settings) => {
+type SettingsArgs = {
+  endpoint: string;
+  key: string;
+  port: number;
+  psiphon: boolean;
+  country: string;
+  gool: boolean;
+};
+
+ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
   console.log(settings);
-  cli = childProcess.spawn("ping", ["localhost"]);
+  const args = [];
+  settings.endpoint && args.push(`-e ${settings.endpoint}`);
+  settings.key && args.push(`-k ${settings.key}`);
+  settings.port && args.push(`-b 127.0.0.1:${settings.port}`);
+  settings.psiphon && args.push(`--cfon --country ${settings.country}`);
+  settings.gool && args.push(`--gool`);
+  console.log("warp-plus", ...args);
+
+  cli = childProcess.spawn("warp-plus", args, {shell: true});
+
   cli.stdout.setEncoding("utf8");
+
   cli.stdout.on("data", (data) => {
     console.log(data);
-    win?.webContents.send("logs", data);
+    // win?.webContents.send('logs', data)
     const fields = data.split(" ") as string[];
-    const field = fields.find((i) => i.includes("icmp_seq=5"));
-    if (field) {
+    const connected = fields.find((i) =>
+      i.includes(`address=127.0.0.1:${settings.port || 8086}`)
+    );
+    if (connected) {
       win?.webContents.send("warp:connected", true);
+      childProcess.execSync(
+        "networksetup -setsocksfirewallproxystate Wi-Fi on"
+      );
+      childProcess.execSync(
+        `networksetup -setsocksfirewallproxy Wi-Fi 127.0.0.1 ${
+          settings.port || 8086
+        }`
+      );
     }
   });
-  // cli.stdout.on("resume", () => {
-  //   console.log("start/resume");
-  //   win?.webContents.send("warp:connected", true);
-  // });
-  cli.on("error", () => {
-    console.log("error");
+
+  cli.on("error", (e) => {
+    console.log(e.message);
     cli?.kill();
     win?.webContents.send("warp:connected", false);
   });
 });
 
 ipcMain.on("warp:disconnect", () => {
+  childProcess.execSync("networksetup -setsocksfirewallproxystate Wi-Fi off");
+  console.log("disconneted");
   cli?.kill();
 });
 
 ipcMain.on("app:quit", () => {
+  childProcess.execSync("networksetup -setsocksfirewallproxystate Wi-Fi off");
   cli?.kill();
   app.exit();
+});
+
+ipcMain.on("app:path", (e) => {
+  const appPath = app.getPath("home");
+  e.returnValue = appPath;
 });
 
 ipcMain.on("settings:set", (_, key, value) => {
@@ -121,4 +156,16 @@ ipcMain.on("settings:delete", (_, key) => {
 
 ipcMain.on("settings:clear", (_) => {
   Storage.instance.clear();
+});
+
+ipcMain.on("download:start", (_) => {
+  download(
+    "https://github.com/bepass-org/warp-plus/releases/download/v1.1.3/warp-plus_darwin-arm64.zip"
+  )
+    .then(() => {
+      win?.webContents.send("download:done");
+    })
+    .catch(() => {
+      win?.webContents.send("download:error");
+    });
 });

@@ -8,6 +8,7 @@ type WarpProps = {
   connect: () => void;
   disconnect: () => void;
 };
+
 export const useWarp = create<WarpProps>()((set, get) => ({
   logs: null,
   connected: false,
@@ -24,9 +25,9 @@ export const useWarp = create<WarpProps>()((set, get) => ({
       (_, connected) => {
         if (connected) {
           set({ connected: true, connecting: false });
-          window.client.logs((_, data) => {
-            set({ logs: data });
-          });
+          // window.client.logs((data) => {
+          //   set({ logs: data });
+          // });
         } else {
           set({ connected: false, connecting: false });
         }

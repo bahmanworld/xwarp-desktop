@@ -4,7 +4,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
   "appId": "xwarp-client",
-  "asar": true,
+  "asar": false,
   "productName": "XWarp Client",
   "directories": {
     "output": "release/${version}"
@@ -17,7 +17,8 @@
     "target": [
       "dmg"
     ],
-    "artifactName": "${productName}-Mac-${version}-Installer.${ext}"
+    "artifactName": "${productName}-Mac-${version}-Installer.${ext}",
+    "icon": "public/logo.icns"
   },
   "win": {
     "target": [
@@ -28,7 +29,8 @@
         ]
       }
     ],
-    "artifactName": "${productName}-Windows-${version}-Setup.${ext}"
+    "artifactName": "${productName}-Windows-${version}-Setup.${ext}",
+    "icon": "public/logo.ico"
   },
   "nsis": {
     "oneClick": false,

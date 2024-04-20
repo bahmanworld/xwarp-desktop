@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { useWarp } from "./useWarp";
-import { PersistStorage, persist } from "zustand/middleware";
 
 export const Countries = [
   { id: "AT", name: "Austria" },
@@ -38,9 +37,9 @@ export const Countries = [
 type Fields = {
   endpoint: string;
   key: string;
-  port: number;
+  port: string;
   psiphon: boolean;
-  counrty: string;
+  country: string;
   gool: boolean;
 };
 
@@ -53,9 +52,9 @@ interface ISettings extends Fields {
 export const useSettings = create<ISettings>()((set, get) => ({
   endpoint: window.client.settings.get("endpoint") || "",
   key: window.client.settings.get("key") || "",
-  port: window.client.settings.get("port") || 8086,
+  port: window.client.settings.get("port") || "",
   psiphon: window.client.settings.get("psiphon") || false,
-  counrty: window.client.settings.get("country") || "US",
+  country: window.client.settings.get("country") || "US",
   gool: window.client.settings.get("gool") || false,
   updateField: (key, value) => {
     set({ [key]: value });
@@ -72,7 +71,7 @@ export const useSettings = create<ISettings>()((set, get) => ({
       key: get().key,
       port: get().port,
       psiphon: get().psiphon,
-      counrty: get().counrty,
+      country: get().country,
       gool: get().gool,
     };
   },
@@ -81,9 +80,9 @@ export const useSettings = create<ISettings>()((set, get) => ({
     set({
       endpoint: "",
       key: "",
-      port: 8086,
+      port: "",
       psiphon: false,
-      counrty: "US",
+      country: "US",
       gool: false,
     });
   },
