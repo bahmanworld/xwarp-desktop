@@ -3,9 +3,9 @@
  */
 {
   "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
-  "appId": "xwarp-client",
+  "appId": "xwarp",
   "asar": false,
-  "productName": "XWarp Client",
+  "productName": "XWarp",
   "directories": {
     "output": "release/${version}"
   },

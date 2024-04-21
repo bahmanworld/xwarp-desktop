@@ -1,11 +1,11 @@
 {
-  "name": "xwarp-client",
+  "name": "xwarp",
   "private": true,
   "version": "1.18.5",
   "main": "dist-electron/main.js",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && electron-builder",
+    "build": "tsc && GENERATE_SOURCEMAP=false vite build && electron-builder",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "git": "git add . && git commit -m \"some changes\" && git push"

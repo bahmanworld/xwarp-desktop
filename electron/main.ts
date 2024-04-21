@@ -1,7 +1,6 @@
 import { app, BrowserWindow, ipcMain, Tray, shell } from "electron";
 import path from "node:path";
-import childProcess from "child_process";
-import fs from "fs";
+import { spawn, execSync, ChildProcessWithoutNullStreams } from "child_process";
 import { Storage } from "./Storage";
 import { download } from "./utils";
 
@@ -72,7 +71,7 @@ ipcMain.on("link:open", (_, url) => {
   shell.openExternal(url);
 });
 
-let cli: childProcess.ChildProcessWithoutNullStreams | null = null;
+let warp: ChildProcessWithoutNullStreams | null = null;
 
 type SettingsArgs = {
   endpoint: string;
@@ -84,55 +83,63 @@ type SettingsArgs = {
 };
 
 ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
-  console.log(settings);
-  const args = [];
-  settings.endpoint && args.push(`-e ${settings.endpoint}`);
-  settings.key && args.push(`-k ${settings.key}`);
-  settings.port && args.push(`-b 127.0.0.1:${settings.port}`);
-  settings.psiphon && args.push(`--cfon --country ${settings.country}`);
-  settings.gool && args.push(`--gool`);
-  console.log("warp-plus", ...args);
-
-  cli = childProcess.spawn("warp-plus", args, {shell: true});
-
-  cli.stdout.setEncoding("utf8");
-
-  cli.stdout.on("data", (data) => {
+  warp = spawn("warp-plus", ["--gool"]);
+  warp.stdout.on("data", (data) => {
     console.log(data);
-    // win?.webContents.send('logs', data)
-    const fields = data.split(" ") as string[];
-    const connected = fields.find((i) =>
-      i.includes(`address=127.0.0.1:${settings.port || 8086}`)
-    );
-    if (connected) {
-      win?.webContents.send("warp:connected", true);
-      childProcess.execSync(
-        "networksetup -setsocksfirewallproxystate Wi-Fi on"
-      );
-      childProcess.execSync(
-        `networksetup -setsocksfirewallproxy Wi-Fi 127.0.0.1 ${
-          settings.port || 8086
-        }`
-      );
-    }
   });
+  warp.on("error", (e)=>{
+    console.log(e.message)
+  })
 
-  cli.on("error", (e) => {
-    console.log(e.message);
-    cli?.kill();
-    win?.webContents.send("warp:connected", false);
-  });
+  // console.log(settings);
+  // const args = [];
+  // settings.endpoint && args.push(`-e ${settings.endpoint}`);
+  // settings.key && args.push(`-k ${settings.key}`);
+  // settings.port && args.push(`-b 127.0.0.1:${settings.port}`);
+  // settings.psiphon && args.push(`--cfon --country ${settings.country}`);
+  // settings.gool && args.push(`--gool`);
+  // console.log("warp-plus", ...args);
+
+  // cli = spawn("warp-plus", args, { shell: true });
+
+  // cli.stdout.setEncoding("utf8");
+
+  // cli.stdout.on("data", (data) => {
+  //   console.log(data);
+  //   // win?.webContents.send('logs', data)
+  //   const fields = data.split(" ") as string[];
+  //   const connected = fields.find((i) =>
+  //     i.includes(`address=127.0.0.1:${settings.port || 8086}`)
+  //   );
+  //   if (connected) {
+  //     win?.webContents.send("warp:connected", true);
+  //     execSync(
+  //       "networksetup -setsocksfirewallproxystate Wi-Fi on"
+  //     );
+  //     execSync(
+  //       `networksetup -setsocksfirewallproxy Wi-Fi 127.0.0.1 ${
+  //         settings.port || 8086
+  //       }`
+  //     );
+  //   }
+  // });
+
+  // cli.on("error", (e) => {
+  //   console.log(e.message);
+  //   cli?.kill();
+  //   win?.webContents.send("warp:connected", false);
+  // });
 });
 
 ipcMain.on("warp:disconnect", () => {
-  childProcess.execSync("networksetup -setsocksfirewallproxystate Wi-Fi off");
+  execSync("networksetup -setsocksfirewallproxystate Wi-Fi off");
   console.log("disconneted");
-  cli?.kill();
+  warp?.kill();
 });
 
 ipcMain.on("app:quit", () => {
-  childProcess.execSync("networksetup -setsocksfirewallproxystate Wi-Fi off");
-  cli?.kill();
+  execSync("networksetup -setsocksfirewallproxystate Wi-Fi off");
+  warp?.kill();
   app.exit();
 });
 

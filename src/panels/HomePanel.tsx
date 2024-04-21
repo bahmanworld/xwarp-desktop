@@ -145,7 +145,7 @@ const HomePanel = () => {
             <Button
               onClick={() => {
                 window.client.openExternalLink(
-                  "https://github.com/bahmanworld/xwarp-client"
+                  "https://github.com/bahmanworld/xwarp"
                 );
               }}
             >
