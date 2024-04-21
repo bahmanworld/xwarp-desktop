@@ -4,7 +4,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
   "appId": "xwarp",
-  "asar": false,
+  "asar": true,
   "productName": "XWarp",
   "directories": {
     "output": "release/${version}"

@@ -14,6 +14,8 @@ let win: BrowserWindow | null;
 // 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
 const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
 
+let child: ChildProcessWithoutNullStreams | null = null;
+
 const WIDTH = 320;
 const HEIGHT = 550;
 
@@ -40,12 +42,12 @@ function createWindow() {
     win?.webContents.send("main-process-message", new Date().toLocaleString());
   });
 
-  if (!VITE_DEV_SERVER_URL) {
-    win.on("close", function (evt) {
-      evt.preventDefault();
-      app.hide();
-    });
-  }
+  // if (!VITE_DEV_SERVER_URL) {
+  win.on("close", function (evt) {
+    evt.preventDefault();
+    app.hide();
+  });
+  // }
 
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL);
@@ -55,6 +57,7 @@ function createWindow() {
 }
 
 app.on("window-all-closed", () => {
+  console.log("all windows closed");
   if (process.platform !== "darwin") {
     app.quit();
     win = null;
@@ -72,8 +75,6 @@ app.whenReady().then(createWindow);
 ipcMain.on("link:open", (_, url) => {
   shell.openExternal(url);
 });
-
-let child: ChildProcessWithoutNullStreams | null = null;
 
 type SettingsArgs = {
   endpoint: string;
