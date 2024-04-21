@@ -93,20 +93,17 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
   settings.gool && args.push(`--gool`);
   console.log("warp-plus", ...args);
 
-  let codeName = "";
-  if (VITE_DEV_SERVER_URL) {
-    codeName = path.join(process.env.VITE_PUBLIC, "warp-plus");
-  } else {
-    codeName = path.join(process.env.DIST, "warp-plus");
-  }
+  let codeName = path.join(app.getPath("home"), ".warp", "warp-plus")
+  // if (VITE_DEV_SERVER_URL) {
+  //   codeName = path.join(process.env.VITE_PUBLIC, "warp-plus");
+  // } else {
+  //   codeName = path.join(process.env.DIST, "warp-plus");
+  // }
   child = spawn(codeName, args, { shell: true });
 
   child.stdout.setEncoding("utf8");
 
   child.stdout.on("data", (data) => {
-    if (fs.existsSync(path.join(app.getAppPath(), "stuff"))) {
-      setReadAndWritePermissions(path.join(app.getAppPath(), "stuff"));
-    }
     console.log(Math.random(), "@", data);
     win?.webContents.send("logs", (data as string).trim());
     const fields = data.split(" ") as string[];

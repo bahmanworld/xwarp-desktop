@@ -67,7 +67,7 @@ const HomePanel = () => {
             />
             <div>
               <div style={{ fontSize: 20, fontWeight: "bold" }}>
-                XWarp Client
+                XWarp
               </div>
               <div style={{ fontSize: 10, opacity: 0.4 }}>
                 Version {PackageJSON.version}

@@ -7,6 +7,7 @@ type WarpProps = {
   connecting: boolean;
   connect: () => void;
   disconnect: () => void;
+  clearLogs: () => void;
 };
 
 export const useWarp = create<WarpProps>()((set, get) => ({
@@ -37,5 +38,8 @@ export const useWarp = create<WarpProps>()((set, get) => ({
   disconnect: () => {
     set({ connected: false, connecting: false });
     window.client.disconnect();
+  },
+  clearLogs: () => {
+    set({ logs: [] });
   },
 }));

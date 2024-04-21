@@ -1,12 +1,14 @@
 import React from "react";
 import { useWarp } from "../stores/useWarp";
-import { ChevronLeft } from "lucide-react";
-import { Button } from "@blueprintjs/core";
+import { ChevronLeft, Eraser } from "lucide-react";
+import { Button, ButtonGroup } from "@blueprintjs/core";
 import { usePanelStack } from "../stores/useStack";
+import { useSettings } from "../stores/useSettings";
 
 function LogsPanel() {
   const stack = usePanelStack();
   const warp = useWarp();
+  const settings = useSettings();
 
   const divRef = React.useRef<HTMLDivElement>(null);
 
@@ -30,7 +32,7 @@ function LogsPanel() {
         style={{
           width: "100%",
           display: "flex",
-          gap: 5,
+          gap: 10,
           alignItems: "center",
         }}
       >
@@ -40,7 +42,7 @@ function LogsPanel() {
             stack.pop();
           }}
         >
-          <ChevronLeft size={32} style={{ opacity: 0.2 }} strokeWidth={1.5} />
+          <ChevronLeft style={{ marginBottom: -4 }}  />
         </Button>
         <div>
           <h3 style={{ margin: 0 }}>Logs</h3>
@@ -49,11 +51,28 @@ function LogsPanel() {
           </div>
         </div>
         <div style={{ flex: 1 }} />
+        <ButtonGroup>
+            <Button
+              onClick={() => {
+                  warp.clearLogs()
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
+                <Eraser size={16} style={{marginInlineEnd: 3}} />
+                <span>Clear</span>
+              </div>
+            </Button>
+          </ButtonGroup>
       </div>
 
       <div
         ref={divRef}
         style={{
+          marginTop: 10,
+          fontFamily: "monospace",
+          wordBreak: "break-all",
+          lineBreak: "loose",
+          wordWrap: "break-word",
           flex: 1,
           height: "100%",
           display: "flex",
@@ -70,8 +89,10 @@ function LogsPanel() {
                 transition: "all 1s ease",
                 fontSize: 12,
                 opacity: index < warp.logs.length - 1 ? 0.3 : 1,
-                color: log.includes('msg="serving proxy"')
+                color: log.includes(`level=INFO`)
                   ? "green"
+                  : log.includes(`level=ERROR`)
+                  ? "red"
                   : "inherit",
               }}
             >
