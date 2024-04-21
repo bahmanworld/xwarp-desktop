@@ -27,15 +27,15 @@ html {
     Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
-/* html:after {
+html:after {
   content: "";
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  height: 40px;
+  height: 30px;
   -webkit-app-region: drag;
-} */
+}
 
 @media (prefers-color-scheme: dark) {
   html,

@@ -17,14 +17,14 @@ export const useWarp = create<WarpProps>()((set, get) => ({
   connect: () => {
     if (get().connecting) {
       get().disconnect();
-      window.client.disconnect();
+      window.electron.disconnect();
       return;
     }
     set({ connecting: true });
-    window.client.logs((data) => {
+    window.electron.logs((data) => {
       set({ logs: [...get().logs, data] });
     });
-    window.client.connect(
+    window.electron.connect(
       useSettings.getState().getSettings(),
       (_, connected) => {
         if (connected) {
@@ -37,7 +37,7 @@ export const useWarp = create<WarpProps>()((set, get) => ({
   },
   disconnect: () => {
     set({ connected: false, connecting: false });
-    window.client.disconnect();
+    window.electron.disconnect();
   },
   clearLogs: () => {
     set({ logs: [] });

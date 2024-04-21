@@ -24,6 +24,7 @@ function createWindow() {
     fullscreenable: false,
     center: true,
     resizable: false,
+    titleBarStyle: "hiddenInset",
     width: WIDTH,
     height: HEIGHT,
     minWidth: WIDTH,
@@ -93,7 +94,7 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
   settings.gool && args.push(`--gool`);
   console.log("warp-plus", ...args);
 
-  let codeName = path.join(app.getPath("home"), ".warp", "warp-plus")
+  let codeName = path.join(app.getPath("home"), ".warp", "warp-plus");
   // if (VITE_DEV_SERVER_URL) {
   //   codeName = path.join(process.env.VITE_PUBLIC, "warp-plus");
   // } else {
@@ -104,11 +105,10 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
   child.stdout.setEncoding("utf8");
 
   child.stdout.on("data", (data) => {
-    console.log(Math.random(), "@", data);
+    console.log(data);
     win?.webContents.send("logs", (data as string).trim());
-    const fields = data.split(" ") as string[];
-    const connected = fields.find((i) =>
-      i.includes(`address=127.0.0.1:${settings.port || 8086}`)
+    const connected = (data as string).includes(
+      `address=127.0.0.1:${settings.port || 8086}`
     );
     if (connected) {
       win?.webContents.send("warp:connected", true);

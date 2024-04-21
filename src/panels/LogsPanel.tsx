@@ -12,6 +12,7 @@ function LogsPanel() {
 
   const divRef = React.useRef<HTMLDivElement>(null);
 
+
   React.useEffect(() => {
     divRef.current?.scrollTo(0, divRef.current.scrollHeight);
   }, [warp.logs]);
@@ -22,10 +23,11 @@ function LogsPanel() {
         width: "100%",
         height: "100vh",
         display: "flex",
+        padding: 10,
+        paddingTop: 45,
         flexDirection: "column",
         justifyItems: "center",
         alignItems: "center",
-        padding: 10,
       }}
     >
       <div
@@ -86,7 +88,7 @@ function LogsPanel() {
           return (
             <div
               style={{
-                transition: "all 1s ease",
+                transition: "all .2s ease",
                 fontSize: 12,
                 opacity: index < warp.logs.length - 1 ? 0.3 : 1,
                 color: log.includes(`level=INFO`)

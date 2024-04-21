@@ -30,7 +30,7 @@ const SettingsPanel = () => {
           height: "100vh",
           display: "flex",
           padding: 20,
-          // paddingTop: 40,
+          paddingTop: 45,
           flexDirection: "column",
           justifyItems: "center",
           alignItems: "center",

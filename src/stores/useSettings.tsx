@@ -50,19 +50,19 @@ interface ISettings extends Fields {
 }
 
 export const useSettings = create<ISettings>()((set, get) => ({
-  endpoint: window.client.settings.get("endpoint") || "",
-  key: window.client.settings.get("key") || "",
-  port: window.client.settings.get("port") || "",
-  psiphon: window.client.settings.get("psiphon") || false,
-  country: window.client.settings.get("country") || "US",
-  gool: window.client.settings.get("gool") || false,
+  endpoint: window.electron.settings.get("endpoint") || "",
+  key: window.electron.settings.get("key") || "",
+  port: window.electron.settings.get("port") || "",
+  psiphon: window.electron.settings.get("psiphon") || false,
+  country: window.electron.settings.get("country") || "US",
+  gool: window.electron.settings.get("gool") || false,
   updateField: (key, value) => {
     set({ [key]: value });
-    window.client.settings.set(key, value);
+    window.electron.settings.set(key, value);
     setTimeout(() => {
       set({ ...get() });
       useWarp.getState().disconnect();
-      window.client.disconnect();
+      window.electron.disconnect();
     }, 100);
   },
   getSettings: () => {
@@ -76,7 +76,7 @@ export const useSettings = create<ISettings>()((set, get) => ({
     };
   },
   resetSettings: () => {
-    window.client.settings.clear();
+    window.electron.settings.clear();
     set({
       endpoint: "",
       key: "",

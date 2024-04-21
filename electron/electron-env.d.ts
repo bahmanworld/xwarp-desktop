@@ -9,8 +9,7 @@ declare namespace NodeJS {
 
 // Used in Renderer process, expose in `preload.ts`
 interface Window {
-  ipcRenderer: import("electron").IpcRenderer;
-  client: {
+  electron: {
     settings: {
       set: (key: string, value: unknown) => void;
       get: (key: string) => any;

@@ -7,7 +7,6 @@ import ConnectionIcon from "/connection.png";
 import ConnectedIcon from "/connected.png";
 import { useWarp } from "../stores/useWarp";
 import PackageJSON from "../../package.json";
-import React from "react";
 import LogsPanel from "./LogsPanel";
 
 const HomePanel = () => {
@@ -31,7 +30,7 @@ const HomePanel = () => {
           height: "100vh",
           display: "flex",
           padding: 10,
-          paddingTop: 15,
+          paddingTop: 35,
           flexDirection: "column",
           justifyItems: "center",
           alignItems: "center",
@@ -157,7 +156,7 @@ const HomePanel = () => {
           <Tooltip compact content={"Github Repository"}>
             <Button
               onClick={() => {
-                window.client.openExternalLink(
+                window.electron.openExternalLink(
                   "https://github.com/bahmanworld/xwarp"
                 );
               }}
@@ -181,7 +180,7 @@ const HomePanel = () => {
               intent="danger"
               onClick={() => {
                 if (confirm("Force Quit Application?")) {
-                  window.client.quit();
+                  window.electron.quit();
                 }
               }}
             >
