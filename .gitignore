@@ -15,6 +15,7 @@ release
 *.local
 public/warp-plus
 stuff
+ca.psiphon.PsiphonTunnel.tunnel-core
 
 # Editor directories and files
 .vscode/*
