@@ -1,6 +1,6 @@
 import { usePanelStack } from "../stores/useStack";
 import SettingsPanel from "./SettingsPanel";
-import { Github, HardDriveDownload, Info, Settings, X } from "lucide-react";
+import { Github, HardDriveDownload, Info, Settings, Terminal, X } from "lucide-react";
 import { Button, ButtonGroup, Tooltip } from "@blueprintjs/core";
 import AppLogo from "/logo.png";
 import ConnectionIcon from "/connection.png";
@@ -8,10 +8,12 @@ import ConnectedIcon from "/connected.png";
 import { useWarp } from "../stores/useWarp";
 import PackageJSON from "../../package.json";
 import React from "react";
+import LogsPanel from "./LogsPanel";
 
 const HomePanel = () => {
   const warp = useWarp();
   const stack = usePanelStack();
+
 
   return (
     <div
@@ -130,7 +132,7 @@ const HomePanel = () => {
             )}
           </button>
         </div>
-        <div>{warp.logs || ''}</div>
+        
         <ButtonGroup minimal style={{ marginBottom: 10 }}>
           <Tooltip compact content={"About..."}>
             <Button
@@ -139,6 +141,17 @@ const HomePanel = () => {
               }}
             >
               <Info size={18} style={{ marginBottom: -4 }} />
+            </Button>
+          </Tooltip>
+          <Tooltip compact content={"Logs"}>
+            <Button
+              onClick={() => {
+                stack.push({
+                  renderPanel: LogsPanel
+                })
+              }}
+            >
+              <Terminal size={18} style={{ marginBottom: -4 }} />
             </Button>
           </Tooltip>
           <Tooltip compact content={"Github Repository"}>

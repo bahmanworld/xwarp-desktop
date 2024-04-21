@@ -2,7 +2,8 @@ import { app, BrowserWindow, ipcMain, Tray, shell } from "electron";
 import path from "node:path";
 import { spawn, execSync, ChildProcessWithoutNullStreams } from "child_process";
 import { Storage } from "./Storage";
-import { download } from "./utils";
+import { download, setReadAndWritePermissions } from "./utils";
+import fs from "node:fs";
 
 process.env.DIST = path.join(__dirname, "../dist");
 process.env.VITE_PUBLIC = app.isPackaged
@@ -71,7 +72,7 @@ ipcMain.on("link:open", (_, url) => {
   shell.openExternal(url);
 });
 
-let warp: ChildProcessWithoutNullStreams | null = null;
+let child: ChildProcessWithoutNullStreams | null = null;
 
 type SettingsArgs = {
   endpoint: string;
@@ -83,63 +84,62 @@ type SettingsArgs = {
 };
 
 ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
-  warp = spawn("warp-plus", ["--gool"]);
-  warp.stdout.on("data", (data) => {
-    console.log(data);
+  console.log(settings);
+  const args = [];
+  settings.endpoint && args.push(`-e ${settings.endpoint}`);
+  settings.key && args.push(`-k ${settings.key}`);
+  settings.port && args.push(`-b 127.0.0.1:${settings.port}`);
+  settings.psiphon && args.push(`--cfon --country ${settings.country}`);
+  settings.gool && args.push(`--gool`);
+  console.log("warp-plus", ...args);
+
+  let codeName = "";
+  if (VITE_DEV_SERVER_URL) {
+    codeName = path.join(process.env.VITE_PUBLIC, "warp-plus");
+  } else {
+    codeName = path.join(process.env.DIST, "warp-plus");
+  }
+  child = spawn(codeName, args, { shell: true });
+
+  child.stdout.setEncoding("utf8");
+
+  child.stdout.on("data", (data) => {
+    if (fs.existsSync(path.join(app.getAppPath(), "stuff"))) {
+      setReadAndWritePermissions(path.join(app.getAppPath(), "stuff"));
+    }
+    console.log(Math.random(), "@", data);
+    win?.webContents.send("logs", (data as string).trim());
+    const fields = data.split(" ") as string[];
+    const connected = fields.find((i) =>
+      i.includes(`address=127.0.0.1:${settings.port || 8086}`)
+    );
+    if (connected) {
+      win?.webContents.send("warp:connected", true);
+      execSync("networksetup -setsocksfirewallproxystate Wi-Fi on");
+      execSync(
+        `networksetup -setsocksfirewallproxy Wi-Fi 127.0.0.1 ${
+          settings.port || 8086
+        }`
+      );
+    }
   });
-  warp.on("error", (e)=>{
-    console.log(e.message)
-  })
 
-  // console.log(settings);
-  // const args = [];
-  // settings.endpoint && args.push(`-e ${settings.endpoint}`);
-  // settings.key && args.push(`-k ${settings.key}`);
-  // settings.port && args.push(`-b 127.0.0.1:${settings.port}`);
-  // settings.psiphon && args.push(`--cfon --country ${settings.country}`);
-  // settings.gool && args.push(`--gool`);
-  // console.log("warp-plus", ...args);
-
-  // cli = spawn("warp-plus", args, { shell: true });
-
-  // cli.stdout.setEncoding("utf8");
-
-  // cli.stdout.on("data", (data) => {
-  //   console.log(data);
-  //   // win?.webContents.send('logs', data)
-  //   const fields = data.split(" ") as string[];
-  //   const connected = fields.find((i) =>
-  //     i.includes(`address=127.0.0.1:${settings.port || 8086}`)
-  //   );
-  //   if (connected) {
-  //     win?.webContents.send("warp:connected", true);
-  //     execSync(
-  //       "networksetup -setsocksfirewallproxystate Wi-Fi on"
-  //     );
-  //     execSync(
-  //       `networksetup -setsocksfirewallproxy Wi-Fi 127.0.0.1 ${
-  //         settings.port || 8086
-  //       }`
-  //     );
-  //   }
-  // });
-
-  // cli.on("error", (e) => {
-  //   console.log(e.message);
-  //   cli?.kill();
-  //   win?.webContents.send("warp:connected", false);
-  // });
+  child.on("error", (e) => {
+    console.log(e.message);
+    child?.kill();
+    win?.webContents.send("warp:connected", false);
+  });
 });
 
 ipcMain.on("warp:disconnect", () => {
   execSync("networksetup -setsocksfirewallproxystate Wi-Fi off");
   console.log("disconneted");
-  warp?.kill();
+  child?.kill();
 });
 
 ipcMain.on("app:quit", () => {
   execSync("networksetup -setsocksfirewallproxystate Wi-Fi off");
-  warp?.kill();
+  child?.kill();
   app.exit();
 });
 
@@ -151,6 +151,7 @@ ipcMain.on("app:path", (e) => {
 ipcMain.on("settings:set", (_, key, value) => {
   console.log("server:", key, value);
   Storage.instance.set(key, value);
+  child?.kill();
 });
 
 ipcMain.on("settings:get", (e, key) => {

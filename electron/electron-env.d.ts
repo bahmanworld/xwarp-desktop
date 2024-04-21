@@ -23,7 +23,7 @@ interface Window {
     ) => void;
     disconnect: () => void;
     quit: () => void;
-    // logs: (callback: (data: any) => void) => void;
+    logs: (callback: (data: any) => void) => void;
     openExternalLink: (url: string) => void;
     download: (
       callback: (error: Error | null, finished: boolean) => void

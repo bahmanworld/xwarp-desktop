@@ -58,11 +58,11 @@ contextBridge.exposeInMainWorld("client", {
     ipcRenderer.send("app:quit");
   },
 
-  // logs: (callback: (data: any) => void) => {
-  //   ipcRenderer.on("logs", (_, logs) => {
-  //     callback(logs);
-  //   });
-  // },
+  logs: (callback: (data: any) => void) => {
+    ipcRenderer.on("logs", (_, logs) => {
+      callback(logs);
+    });
+  },
 
   openExternalLink: (url: string) => {
     ipcRenderer.send("link:open", url);

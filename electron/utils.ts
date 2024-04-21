@@ -3,6 +3,7 @@ import { createWriteStream } from "fs";
 import path from "path";
 import { Readable } from "node:stream";
 import { finished } from "node:stream/promises";
+import fs from 'fs'
 
 export const download = async (url: string) => {
   let result: Promise<void> | null = null;
@@ -17,3 +18,10 @@ export const download = async (url: string) => {
   }
   return result;
 };
+
+
+export const setReadAndWritePermissions = (path: string) => {
+  let mode = fs.statSync(path).mode;
+  let newMode = mode | 0o222;
+  fs.chmodSync(path, newMode);
+}

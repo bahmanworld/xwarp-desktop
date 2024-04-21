@@ -91,7 +91,7 @@ body {
   border: 1px solid var(--big-button-border-color);
   background-color: rgb(var(--big-button-normal-background-color));
   color: #fff;
-  box-shadow: 0 0 0 10px
+  box-shadow: 0 0 0 8px
     rgba(
       var(--big-button-normal-background-color),
       var(--big-button-shadow-opacity)
