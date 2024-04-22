@@ -88,19 +88,21 @@ type SettingsArgs = {
 ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
   console.log(settings);
   const args = [];
-  args.push(`-s ${path.join(app.getPath("home"), ".xwarp")}`);
+  const stuffDir = path.join(app.getPath("home"), ".xwarp");
+  if (fs.existsSync(stuffDir)) execSync(`rm -rf ${stuffDir}`)
+  args.push(`-s ${stuffDir}`);
   settings.endpoint && args.push(`-e ${settings.endpoint}`);
-  settings.key && args.push(`-k ${settings.key}`);
   settings.port && args.push(`-b 127.0.0.1:${settings.port}`);
-  settings.psiphon && args.push(`--cfon --country ${settings.country}`);
+  settings.key && args.push(`-k ${settings.key}`);
   settings.gool && args.push(`--gool`);
+  settings.psiphon && args.push(`--cfon --country ${settings.country}`);
   console.log("warp-plus", ...args);
 
-  let flagName = ""
+  let flagName = "";
   if (VITE_DEV_SERVER_URL) {
-    flagName = path.join(process.env.VITE_PUBLIC, "warp-plus")
+    flagName = path.join(process.env.VITE_PUBLIC, "warp-plus");
   } else {
-    flagName = path.join(process.env.DIST, "warp-plus")
+    flagName = path.join(process.env.DIST, "warp-plus");
   }
   child = spawn(flagName, args, { shell: true });
 

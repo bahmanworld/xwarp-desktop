@@ -8,6 +8,7 @@ import ConnectedIcon from "/connected.png";
 import { useWarp } from "../stores/useWarp";
 import PackageJSON from "../../package.json";
 import LogsPanel from "./LogsPanel";
+import AboutPanel from "./AboutPanel";
 
 const HomePanel = () => {
   const warp = useWarp();
@@ -136,7 +137,9 @@ const HomePanel = () => {
           <Tooltip compact content={"About..."}>
             <Button
               onClick={() => {
-                alert("info");
+                stack.push({
+                  renderPanel: AboutPanel
+                })
               }}
             >
               <Info size={18} style={{ marginBottom: -4 }} />

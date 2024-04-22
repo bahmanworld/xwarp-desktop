@@ -1,20 +1,9 @@
-import React from "react";
-import { useWarp } from "../stores/useWarp";
 import { ChevronLeft, Eraser } from "lucide-react";
 import { Button, ButtonGroup } from "@blueprintjs/core";
 import { usePanelStack } from "../stores/useStack";
-import { useSettings } from "../stores/useSettings";
 
-function LogsPanel() {
+function AboutPanel() {
   const stack = usePanelStack();
-  const warp = useWarp();
-  const settings = useSettings();
-
-  const divRef = React.useRef<HTMLDivElement>(null);
-
-  React.useEffect(() => {
-    divRef.current?.scrollTo(0, divRef.current.scrollHeight);
-  }, [warp.logs]);
 
   return (
     <div
@@ -46,23 +35,15 @@ function LogsPanel() {
           <ChevronLeft style={{ marginBottom: -4 }} />
         </Button>
         <div>
-          <h3 style={{ margin: 0 }}>Logs</h3>
-          <div style={{ fontSize: 10, opacity: 0.4 }}>Terminal Logs</div>
+          <h3 style={{ margin: 0 }}>About XWarp</h3>
+          <div style={{ fontSize: 10, opacity: 0.4 }}>
+            Credits & Contributers
+          </div>
         </div>
         <div style={{ flex: 1 }} />
         <ButtonGroup>
           <Button
-            onClick={() => {
-              warp.clearLogs();
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
-              <Eraser size={16} style={{ marginInlineEnd: 3 }} />
-              <span>Clear</span>
-            </div>
-          </Button>
-          <Button
-            intent="success"
+          intent="success"
             onClick={() => {
               stack.pop();
             }}
@@ -75,7 +56,6 @@ function LogsPanel() {
       </div>
 
       <div
-        ref={divRef}
         style={{
           marginTop: 10,
           fontFamily: "monospace",
@@ -91,29 +71,29 @@ function LogsPanel() {
           overflowY: "auto",
         }}
       >
-        {warp.logs.reverse().map((log: string, index) => {
-          return (
-            <div
-              style={{
-                transition: "all .2s ease",
-                fontSize: 12,
-                opacity: index < warp.logs.length - 1 ? 0.3 : 1,
-                color: log.includes(`level=INFO`)
-                  ? "green"
-                  : log.includes(`level=ERROR`)
-                  ? "red"
-                  : log.includes(`level=WARN`)
-                  ? "orange"
-                  : "inherit",
-              }}
-            >
-              {log}
-            </div>
-          );
-        })}
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+            Dev #1
+        </div>
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+            Dev #2
+        </div>
       </div>
     </div>
   );
 }
 
-export default LogsPanel;
+export default AboutPanel;
