@@ -88,6 +88,7 @@ type SettingsArgs = {
 ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
   console.log(settings);
   const args = [];
+  args.push(`-s ${path.join(app.getPath("home"), ".xwarp")}`);
   settings.endpoint && args.push(`-e ${settings.endpoint}`);
   settings.key && args.push(`-k ${settings.key}`);
   settings.port && args.push(`-b 127.0.0.1:${settings.port}`);
@@ -95,13 +96,13 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
   settings.gool && args.push(`--gool`);
   console.log("warp-plus", ...args);
 
-  let codeName = path.join(app.getPath("home"), ".warp", "warp-plus");
-  // if (VITE_DEV_SERVER_URL) {
-  //   codeName = path.join(process.env.VITE_PUBLIC, "warp-plus");
-  // } else {
-  //   codeName = path.join(process.env.DIST, "warp-plus");
-  // }
-  child = spawn(codeName, args, { shell: true });
+  let flagName = ""
+  if (VITE_DEV_SERVER_URL) {
+    flagName = path.join(process.env.VITE_PUBLIC, "warp-plus")
+  } else {
+    flagName = path.join(process.env.DIST, "warp-plus")
+  }
+  child = spawn(flagName, args, { shell: true });
 
   child.stdout.setEncoding("utf8");
 
