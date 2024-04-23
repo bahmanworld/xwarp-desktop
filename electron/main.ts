@@ -4,6 +4,7 @@ import { spawn, execSync, ChildProcessWithoutNullStreams } from "child_process";
 import { Storage } from "./Storage";
 import { download, setReadAndWritePermissions } from "./utils";
 import fs from "node:fs";
+import PackageJSON  from "../package.json";
 
 process.env.DIST = path.join(__dirname, "../dist");
 process.env.VITE_PUBLIC = app.isPackaged
@@ -88,8 +89,8 @@ type SettingsArgs = {
 ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
   console.log(settings);
   const args = [];
-  const stuffDir = path.join(app.getPath("home"), ".xwarp");
-  if (fs.existsSync(stuffDir)) execSync(`rm -rf ${stuffDir}`)
+  const stuffDir = path.join(app.getPath("temp"));
+  console.warn("BAHMAN:", stuffDir)
   args.push(`-s ${stuffDir}`);
   settings.endpoint && args.push(`-e ${settings.endpoint}`);
   settings.port && args.push(`-b 127.0.0.1:${settings.port}`);

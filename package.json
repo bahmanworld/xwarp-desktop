@@ -2,6 +2,7 @@
   "name": "xwarp",
   "private": true,
   "version": "1.18.5",
+  "appId": "bahman.world.xwarp",
   "main": "dist-electron/main.js",
   "scripts": {
     "dev": "vite",
