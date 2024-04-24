@@ -1,19 +1,18 @@
 import React from "react";
 import { useWarp } from "../stores/useWarp";
-import { ChevronLeft, Eraser } from "lucide-react";
+import { ChevronLeft, ChevronRight, Eraser } from "lucide-react";
 import { Button, ButtonGroup } from "@blueprintjs/core";
 import { usePanelStack } from "../stores/useStack";
 import { useSettings } from "../stores/useSettings";
+import { useLogs } from "../stores/useLogs";
 
 function LogsPanel() {
   const stack = usePanelStack();
   const warp = useWarp();
-  const settings = useSettings();
-
-  const divRef = React.useRef<HTMLDivElement>(null);
+  const logs = useLogs();
 
   React.useEffect(() => {
-    divRef.current?.scrollTo(0, divRef.current.scrollHeight);
+    logs.update([warp.logs, ...logs.data].slice(0, 10));
   }, [warp.logs]);
 
   return (
@@ -54,6 +53,7 @@ function LogsPanel() {
           <Button
             onClick={() => {
               warp.clearLogs();
+              logs.clear();
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
@@ -75,7 +75,7 @@ function LogsPanel() {
       </div>
 
       <div
-        ref={divRef}
+        // ref={divRef}
         style={{
           marginTop: 10,
           fontFamily: "monospace",
@@ -91,13 +91,13 @@ function LogsPanel() {
           overflowY: "auto",
         }}
       >
-        {warp.logs.reverse().map((log: string, index) => {
+        {logs.data.map((log: string, index: number) => {
           return (
             <div
               style={{
-                transition: "all .2s ease",
-                fontSize: 12,
-                opacity: index < warp.logs.length - 1 ? 0.3 : 1,
+                transition: "all 1s ease",
+                fontSize: 11,
+                opacity: index == 0 ? 1 : 0.6,
                 color: log.includes(`level=INFO`)
                   ? "green"
                   : log.includes(`level=ERROR`)
@@ -107,7 +107,7 @@ function LogsPanel() {
                   : "inherit",
               }}
             >
-              {log}
+              {index == 0 && "▶"} {log}
             </div>
           );
         })}

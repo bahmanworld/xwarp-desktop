@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { useSettings } from "./useSettings";
 
 type WarpProps = {
-  logs: any[];
+  logs: string;
   connected: boolean;
   connecting: boolean;
   connect: () => void;
@@ -11,7 +11,7 @@ type WarpProps = {
 };
 
 export const useWarp = create<WarpProps>()((set, get) => ({
-  logs: [],
+  logs: "",
   connected: false,
   connecting: false,
   connect: () => {
@@ -22,7 +22,7 @@ export const useWarp = create<WarpProps>()((set, get) => ({
     }
     set({ connecting: true });
     window.electron.logs((data) => {
-      set({ logs: [...get().logs, data] });
+      set({ logs: data });
     });
     window.electron.connect(
       useSettings.getState().getSettings(),
@@ -36,10 +36,10 @@ export const useWarp = create<WarpProps>()((set, get) => ({
     );
   },
   disconnect: () => {
-    set({ connected: false, connecting: false });
+    set({ logs: "", connected: false, connecting: false });
     window.electron.disconnect();
   },
   clearLogs: () => {
-    set({ logs: [] });
+    set({ logs: "" });
   },
 }));
