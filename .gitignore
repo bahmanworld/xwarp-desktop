@@ -13,6 +13,8 @@ dist-ssr
 dist-electron
 release
 *.local
+
+# Warp Plus
 public/warp-plus
 stuff
 ca.psiphon.PsiphonTunnel.tunnel-core

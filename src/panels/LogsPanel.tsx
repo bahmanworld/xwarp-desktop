@@ -1,9 +1,8 @@
 import React from "react";
 import { useWarp } from "../stores/useWarp";
-import { ChevronLeft, ChevronRight, Eraser } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { Button, ButtonGroup } from "@blueprintjs/core";
 import { usePanelStack } from "../stores/useStack";
-import { useSettings } from "../stores/useSettings";
 import { useLogs } from "../stores/useLogs";
 
 function LogsPanel() {
@@ -12,8 +11,8 @@ function LogsPanel() {
   const logs = useLogs();
 
   React.useEffect(() => {
-    logs.update([warp.logs, ...logs.data].slice(0, 10));
-  }, [warp.logs]);
+    logs.update([warp.log, ...logs.data].slice(0, 100));
+  }, [warp.log]);
 
   return (
     <div
@@ -50,7 +49,7 @@ function LogsPanel() {
         </div>
         <div style={{ flex: 1 }} />
         <ButtonGroup>
-          <Button
+          {/* <Button
             onClick={() => {
               warp.clearLogs();
               logs.clear();
@@ -60,7 +59,7 @@ function LogsPanel() {
               <Eraser size={16} style={{ marginInlineEnd: 3 }} />
               <span>Clear</span>
             </div>
-          </Button>
+          </Button> */}
           <Button
             intent="success"
             onClick={() => {
@@ -95,13 +94,14 @@ function LogsPanel() {
           return (
             <div
               style={{
-                transition: "all 1s ease",
-                fontSize: 11,
+                fontSize: 12,
                 opacity: index == 0 ? 1 : 0.6,
+                lineHeight: 1.1,
+                fontWeight: index == 0 ? "bold" : "normal",
                 color: log.includes(`level=INFO`)
                   ? "green"
                   : log.includes(`level=ERROR`)
-                  ? "red"
+                  ? "orangered"
                   : log.includes(`level=WARN`)
                   ? "orange"
                   : "inherit",

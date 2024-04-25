@@ -43,12 +43,10 @@ function createWindow() {
     win?.webContents.send("main-process-message", new Date().toLocaleString());
   });
 
-  // if (!VITE_DEV_SERVER_URL) {
-  win.on("close", function (evt) {
-    evt.preventDefault();
-    app.hide();
-  });
-  // }
+  win.on('close', (e)=>{
+    e.preventDefault()
+    app.hide()
+  })
 
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL);
@@ -65,7 +63,7 @@ app.on("window-all-closed", () => {
   }
 });
 
-app.on("activate", () => {
+app.on("activate", (e) => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
@@ -89,7 +87,8 @@ type SettingsArgs = {
 ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
   console.log(settings);
   const args = [];
-  const stuffDir = path.join(app.getPath("temp"));
+  const stuffDir = path.join(app.getPath("temp"), 'xwarp');
+  // if (fs.existsSync(stuffDir)) execSync(`rm -rf ${stuffDir}`)
   console.warn("BAHMAN:", stuffDir)
   args.push(`-s ${stuffDir}`);
   settings.endpoint && args.push(`-e ${settings.endpoint}`);
@@ -125,7 +124,7 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
       );
     }
   });
-
+  
   child.on("error", (e) => {
     console.log(e.message);
     child?.kill();
@@ -144,6 +143,7 @@ ipcMain.on("app:quit", () => {
   child?.kill();
   app.exit();
 });
+
 
 ipcMain.on("app:path", (e) => {
   const appPath = app.getPath("home");
