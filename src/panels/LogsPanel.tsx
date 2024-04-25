@@ -101,7 +101,7 @@ function LogsPanel() {
                 color: log.includes(`level=INFO`)
                   ? "green"
                   : log.includes(`level=ERROR`)
-                  ? "orangered"
+                  ? "red"
                   : log.includes(`level=WARN`)
                   ? "orange"
                   : "inherit",
