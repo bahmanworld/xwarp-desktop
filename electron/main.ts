@@ -2,9 +2,7 @@ import { app, BrowserWindow, ipcMain, Tray, shell } from "electron";
 import path from "node:path";
 import { spawn, execSync, ChildProcessWithoutNullStreams } from "child_process";
 import { Storage } from "./Storage";
-import { download, setReadAndWritePermissions } from "./utils";
-import fs from "node:fs";
-import PackageJSON  from "../package.json";
+import { download } from "./utils";
 
 process.env.DIST = path.join(__dirname, "../dist");
 process.env.VITE_PUBLIC = app.isPackaged
@@ -17,10 +15,13 @@ const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
 
 let child: ChildProcessWithoutNullStreams | null = null;
 
-const WIDTH = 320;
-const HEIGHT = 550;
+const WIDTH = 300;
+const HEIGHT = 500;
 
 function createWindow() {
+
+  new Tray(path.join(process.env.DIST, "logo.png"))
+
   win = new BrowserWindow({
     icon: process.env.VITE_PUBLIC + "logo.png",
     maximizable: false,
@@ -43,10 +44,10 @@ function createWindow() {
     win?.webContents.send("main-process-message", new Date().toLocaleString());
   });
 
-  win.on('close', (e)=>{
-    e.preventDefault()
-    app.hide()
-  })
+  win?.on("close", (e) => {
+    e.preventDefault();
+    app?.hide();
+  });
 
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL);
@@ -87,9 +88,9 @@ type SettingsArgs = {
 ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
   console.log(settings);
   const args = [];
-  const stuffDir = path.join(app.getPath("temp"), 'xwarp');
-  // if (fs.existsSync(stuffDir)) execSync(`rm -rf ${stuffDir}`)
-  console.warn("BAHMAN:", stuffDir)
+  const stuffDir = path.join(app.getPath("temp"), "xwarp");
+  // if (fs.existsSync(stuffDir)) execSync(`rm -rf ${stuffDir}`);
+  console.warn("BAHMAN:", stuffDir);
   args.push(`-s ${stuffDir}`);
   settings.endpoint && args.push(`-e ${settings.endpoint}`);
   settings.port && args.push(`-b 127.0.0.1:${settings.port}`);
@@ -105,9 +106,7 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
     flagName = path.join(process.env.DIST, "warp-plus");
   }
   child = spawn(flagName, args, { shell: true });
-
   child.stdout.setEncoding("utf8");
-
   child.stdout.on("data", (data) => {
     console.log(data);
     win?.webContents.send("logs", (data as string).trim());
@@ -124,11 +123,10 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
       );
     }
   });
-  
+
   child.on("error", (e) => {
     console.log(e.message);
     child?.kill();
-    win?.webContents.send("warp:connected", false);
   });
 });
 
@@ -143,7 +141,6 @@ ipcMain.on("app:quit", () => {
   child?.kill();
   app.exit();
 });
-
 
 ipcMain.on("app:path", (e) => {
   const appPath = app.getPath("home");

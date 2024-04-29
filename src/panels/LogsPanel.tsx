@@ -11,7 +11,9 @@ function LogsPanel() {
   const logs = useLogs();
 
   React.useEffect(() => {
-    logs.update([warp.log, ...logs.data].slice(0, 100));
+    if (warp.log) {
+      logs.update([warp.log, ...logs.data].slice(0, 100));
+    }
   }, [warp.log]);
 
   return (
