@@ -105,6 +105,7 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
   child = spawn(flagName, args, { shell: true });
   child.stdout.setEncoding("utf8");
   child.stdout.on("data", (data) => {
+    console.log(data);
     win?.webContents.send("logs", (data as string).trim());
     const connected = (data as string).includes(
       `address=127.0.0.1:${settings.port || 8086}`

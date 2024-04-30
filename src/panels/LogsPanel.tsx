@@ -4,17 +4,28 @@ import { ChevronLeft, Eraser } from "lucide-react";
 import { Button, ButtonGroup } from "@blueprintjs/core";
 import { usePanelStack } from "../stores/useStack";
 import { useLogs } from "../stores/useLogs";
+import { useSettings } from "../stores/useSettings";
 
 function LogsPanel() {
   const stack = usePanelStack();
+  const settings = useSettings();
   const warp = useWarp();
   const logs = useLogs();
 
   React.useEffect(() => {
-    if (warp.log && !logs.data.at(logs.data.length-1)?.includes(warp.log)) {
-      logs.update([warp.log, ...logs.data].slice(0, 100));
+    if (warp.log && warp.log !== logs.data[0]) {
+      logs.update([warp.log, ...logs.data].slice(0, 50));
     }
   }, [warp.log]);
+
+  const [isDark, setIsDark] = React.useState(false);
+  React.useEffect(() => {
+    const darkMedia = window.matchMedia("(prefers-color-scheme: dark)");
+    setIsDark(darkMedia.matches);
+    darkMedia.addEventListener("change", (e) => {
+      setIsDark(e.matches);
+    });
+  }, []);
 
   return (
     <div
@@ -54,7 +65,6 @@ function LogsPanel() {
           <Button
             onClick={() => {
               warp.clearLogs();
-              logs.clear();
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
@@ -74,14 +84,13 @@ function LogsPanel() {
           </Button>
         </ButtonGroup>
       </div>
+
       <div
         // ref={divRef}
         style={{
+          width: "100%",
           marginTop: 10,
-          fontFamily: "monospace",
-          wordBreak: "break-all",
-          lineBreak: "loose",
-          wordWrap: "break-word",
+          // fontFamily: "monospace",
           flex: 1,
           height: "100%",
           display: "flex",
@@ -95,20 +104,23 @@ function LogsPanel() {
           return (
             <div
               style={{
-                fontSize: 12,
-                opacity: index == 0 ? 1 : 0.6,
-                lineHeight: 1.1,
-                fontWeight: index == 0 ? "bold" : "normal",
-                color: log.includes(`level=INFO`)
-                  ? "green"
+                width: "100%",
+                fontSize: 10,
+                borderLeftWidth: 4,
+                borderLeftStyle: "solid",
+                borderLeftColor: log.includes("level=INFO")
+                  ? "#2dde98"
                   : log.includes(`level=ERROR`)
-                  ? "red"
+                  ? "#ff6c5f"
                   : log.includes(`level=WARN`)
-                  ? "orange"
+                  ? "#ffc168"
                   : "inherit",
+                opacity: index == 0 ? 1 : 0.5,
+                paddingLeft: 10,
+                fontWeight: index == 0 ? "bold" : "normal",
               }}
             >
-              {index == 0 && "▶"} {log}
+              {log}
             </div>
           );
         })}

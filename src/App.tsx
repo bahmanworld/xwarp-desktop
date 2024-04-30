@@ -1,4 +1,8 @@
-import { FocusStyleManager, PanelStack2 } from "@blueprintjs/core";
+import {
+  FocusStyleManager,
+  OverlaysProvider,
+  PanelStack2,
+} from "@blueprintjs/core";
 import React from "react";
 import { usePanelStack } from "./stores/useStack";
 import HomePanel from "./panels/HomePanel";
@@ -9,10 +13,9 @@ function App() {
   const stack = usePanelStack();
 
   React.useEffect(() => {
-
     stack.push({
-      renderPanel: HomePanel
-    })
+      renderPanel: HomePanel,
+    });
     const darkMedia = window.matchMedia("(prefers-color-scheme: dark)");
     setDark(darkMedia.matches);
     const callback = (e: MediaQueryListEvent) => {
@@ -25,22 +28,24 @@ function App() {
   }, []);
 
   return (
-    <main
-      className={dark ? "bp5-dark" : ""}
-      style={{
-        height: "100vh",
-        display: "flex",
-        justifyItems: "center",
-        alignItems: "center",
-      }}
-    >
-      <PanelStack2
-        className="panel"
-        showPanelHeader={false}
-        renderActivePanelOnly
-        stack={stack.stacks}
-      />
-    </main>
+    <OverlaysProvider>
+      <main
+        className={dark ? "bp5-dark" : ""}
+        style={{
+          height: "100vh",
+          display: "flex",
+          justifyItems: "center",
+          alignItems: "center",
+        }}
+      >
+        <PanelStack2
+          className="panel"
+          showPanelHeader={false}
+          renderActivePanelOnly
+          stack={stack.stacks}
+        />
+      </main>
+    </OverlaysProvider>
   );
 }
 

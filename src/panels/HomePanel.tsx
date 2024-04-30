@@ -1,7 +1,21 @@
 import { usePanelStack } from "../stores/useStack";
 import SettingsPanel from "./SettingsPanel";
-import { Github, HardDriveDownload, Info, Settings, Terminal, X } from "lucide-react";
-import { Button, ButtonGroup, Tooltip } from "@blueprintjs/core";
+import {
+  Github,
+  HardDriveDownload,
+  Info,
+  Settings,
+  Terminal,
+  X,
+} from "lucide-react";
+import {
+  Button,
+  ButtonGroup,
+  OverlayToaster,
+  Toast2,
+  Toaster,
+  Tooltip,
+} from "@blueprintjs/core";
 import AppLogo from "/logo.png";
 import ConnectionIcon from "/connection.png";
 import ConnectedIcon from "/connected.png";
@@ -11,9 +25,8 @@ import LogsPanel from "./LogsPanel";
 import AboutPanel from "./AboutPanel";
 
 const HomePanel = () => {
-  const warp = useWarp();
   const stack = usePanelStack();
-
+  const warp = useWarp();
 
   return (
     <div
@@ -66,9 +79,7 @@ const HomePanel = () => {
               }}
             />
             <div>
-              <div style={{ fontSize: 20, fontWeight: "bold" }}>
-                XWarp
-              </div>
+              <div style={{ fontSize: 20, fontWeight: "bold" }}>XWarp</div>
               <div style={{ fontSize: 10, opacity: 0.4 }}>
                 Version {PackageJSON.version}
               </div>
@@ -132,14 +143,14 @@ const HomePanel = () => {
             )}
           </button>
         </div>
-        
+
         <ButtonGroup minimal style={{ marginBottom: 10 }}>
           <Tooltip compact content={"About..."}>
             <Button
               onClick={() => {
                 stack.push({
-                  renderPanel: AboutPanel
-                })
+                  renderPanel: AboutPanel,
+                });
               }}
             >
               <Info size={18} style={{ marginBottom: -4 }} />
@@ -149,8 +160,8 @@ const HomePanel = () => {
             <Button
               onClick={() => {
                 stack.push({
-                  renderPanel: LogsPanel
-                })
+                  renderPanel: LogsPanel,
+                });
               }}
             >
               <Terminal size={18} style={{ marginBottom: -4 }} />

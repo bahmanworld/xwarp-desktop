@@ -7,13 +7,11 @@ type LogsProps = {
 };
 
 export const useLogs = create<LogsProps>()((set, get) => ({
-  data: window.electron.settings.get("logs") || [],
+  data: [],
   update: (data) => {
     set({ data });
-    window.electron.settings.set("logs", data);
   },
   clear: () => {
     set({ data: [] });
-    window.electron.settings.set("logs", []);
   },
 }));
