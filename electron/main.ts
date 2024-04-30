@@ -16,8 +16,8 @@ const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
 
 let child: ChildProcessWithoutNullStreams | null = null;
 
-const WIDTH = 300;
-const HEIGHT = 500;
+const WIDTH = 330;
+const HEIGHT = 530;
 
 function createWindow() {
 
@@ -88,7 +88,7 @@ type SettingsArgs = {
 ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
   const args = [];
   const stuffDir = path.join(app.getPath("home"), ".xwarp");
-  if (fs.existsSync(stuffDir)) execSync(`rm -rf ${stuffDir}`);
+  // if (fs.existsSync(stuffDir)) execSync(`rm -rf ${stuffDir}`);
   args.push(`-s ${stuffDir}`);
   settings.endpoint && args.push(`-e ${settings.endpoint}`);
   settings.port && args.push(`-b 127.0.0.1:${settings.port}`);
