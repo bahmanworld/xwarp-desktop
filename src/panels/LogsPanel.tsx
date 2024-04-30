@@ -76,6 +76,7 @@ function LogsPanel() {
             intent="success"
             onClick={() => {
               stack.pop();
+              logs.clear()
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
