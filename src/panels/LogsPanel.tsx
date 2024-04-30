@@ -65,6 +65,7 @@ function LogsPanel() {
           <Button
             onClick={() => {
               warp.clearLogs();
+              logs.clear()
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
@@ -76,7 +77,6 @@ function LogsPanel() {
             intent="success"
             onClick={() => {
               stack.pop();
-              logs.clear()
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
