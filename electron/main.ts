@@ -1,5 +1,6 @@
 import { app, BrowserWindow, ipcMain, Tray, shell } from "electron";
 import path from "node:path";
+import fs from 'fs'
 import { spawn, execSync, ChildProcessWithoutNullStreams } from "child_process";
 import { Storage } from "./Storage";
 import { download } from "./utils";
@@ -57,7 +58,6 @@ function createWindow() {
 }
 
 app.on("window-all-closed", () => {
-  console.log("all windows closed");
   if (process.platform !== "darwin") {
     app.quit();
     win = null;
@@ -86,18 +86,15 @@ type SettingsArgs = {
 };
 
 ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
-  console.log(settings);
   const args = [];
-  const stuffDir = path.join(app.getPath("temp"), "xwarp");
-  // if (fs.existsSync(stuffDir)) execSync(`rm -rf ${stuffDir}`);
-  console.warn("BAHMAN:", stuffDir);
+  const stuffDir = path.join(app.getPath("home"), ".xwarp");
+  if (fs.existsSync(stuffDir)) execSync(`rm -rf ${stuffDir}`);
   args.push(`-s ${stuffDir}`);
   settings.endpoint && args.push(`-e ${settings.endpoint}`);
   settings.port && args.push(`-b 127.0.0.1:${settings.port}`);
   settings.key && args.push(`-k ${settings.key}`);
   settings.gool && args.push(`--gool`);
   settings.psiphon && args.push(`--cfon --country ${settings.country}`);
-  console.log("warp-plus", ...args);
 
   let flagName = "";
   if (VITE_DEV_SERVER_URL) {
@@ -108,7 +105,6 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
   child = spawn(flagName, args, { shell: true });
   child.stdout.setEncoding("utf8");
   child.stdout.on("data", (data) => {
-    console.log(data);
     win?.webContents.send("logs", (data as string).trim());
     const connected = (data as string).includes(
       `address=127.0.0.1:${settings.port || 8086}`
@@ -125,14 +121,12 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
   });
 
   child.on("error", (e) => {
-    console.log(e.message);
     child?.kill();
   });
 });
 
 ipcMain.on("warp:disconnect", () => {
   execSync("networksetup -setsocksfirewallproxystate Wi-Fi off");
-  console.log("disconneted");
   child?.kill();
 });
 
@@ -148,7 +142,6 @@ ipcMain.on("app:path", (e) => {
 });
 
 ipcMain.on("settings:set", (_, key, value) => {
-  console.log("server:", key, value);
   Storage.instance.set(key, value);
   child?.kill();
 });

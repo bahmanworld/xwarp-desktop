@@ -1,6 +1,6 @@
 import React from "react";
 import { useWarp } from "../stores/useWarp";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Eraser } from "lucide-react";
 import { Button, ButtonGroup } from "@blueprintjs/core";
 import { usePanelStack } from "../stores/useStack";
 import { useLogs } from "../stores/useLogs";
@@ -11,7 +11,7 @@ function LogsPanel() {
   const logs = useLogs();
 
   React.useEffect(() => {
-    if (warp.log) {
+    if (warp.log && !logs.data.at(logs.data.length-1)?.includes(warp.log)) {
       logs.update([warp.log, ...logs.data].slice(0, 100));
     }
   }, [warp.log]);
@@ -51,7 +51,7 @@ function LogsPanel() {
         </div>
         <div style={{ flex: 1 }} />
         <ButtonGroup>
-          {/* <Button
+          <Button
             onClick={() => {
               warp.clearLogs();
               logs.clear();
@@ -61,7 +61,7 @@ function LogsPanel() {
               <Eraser size={16} style={{ marginInlineEnd: 3 }} />
               <span>Clear</span>
             </div>
-          </Button> */}
+          </Button>
           <Button
             intent="success"
             onClick={() => {
@@ -74,7 +74,6 @@ function LogsPanel() {
           </Button>
         </ButtonGroup>
       </div>
-
       <div
         // ref={divRef}
         style={{
