@@ -20,7 +20,7 @@ jobs:
           node-version: 20.x
 
       - name: Install Dependencies
-      - run: npm ci
+        run: npm ci
 
       - name: Build MacOS App Arm64
-      - run: npm run build:macos-arm64
+        run: npm run build:macos-arm64
