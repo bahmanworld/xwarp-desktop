@@ -12,9 +12,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && electron-builder",
-    "release:macos": "tsc && vite build && electron-builder --macos",
-    "release:windows": "tsc && vite build && electron-builder --windows",
-    "release:linux": "tsc && vite build && electron-builder --linux",
+    "release:macos": "tsc && vite build && electron-builder --macos -p always",
+    "release:windows": "tsc && vite build && electron-builder --windows -p always",
+    "release:linux": "tsc && vite build && electron-builder --linux -p always",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "git": "git add . && git commit -m \"some changes\" && git push"
