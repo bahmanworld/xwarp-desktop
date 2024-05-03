@@ -44,7 +44,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      Upload binaries to release
+      # Upload binaries to release
       - name: Upload Release Asset
         uses: svenstaro/upload-release-action@v2
         with:
