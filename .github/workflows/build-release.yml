@@ -6,6 +6,8 @@ on:
       - v*
 
 jobs:
+  permissions:
+    contents: true
   release:
     runs-on: ${{ matrix.os }}
 
