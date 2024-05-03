@@ -1,6 +1,6 @@
 import { app, BrowserWindow, ipcMain, Tray, shell } from "electron";
 import path from "node:path";
-import fs from 'fs'
+import fs from "fs";
 import { spawn, execSync, ChildProcessWithoutNullStreams } from "child_process";
 import { Storage } from "./Storage";
 import { download } from "./utils";
@@ -16,12 +16,11 @@ const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
 
 let child: ChildProcessWithoutNullStreams | null = null;
 
-const WIDTH = 330;
+const WIDTH = 320;
 const HEIGHT = 530;
 
 function createWindow() {
-
-  new Tray(path.join(process.env.DIST, "logo.png"))
+  new Tray(path.join(process.env.DIST, "logo.png"));
 
   win = new BrowserWindow({
     icon: process.env.VITE_PUBLIC + "logo.png",
@@ -89,6 +88,7 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
   const args = [];
   const stuffDir = path.join(app.getPath("home"), ".xwarp");
   // if (fs.existsSync(stuffDir)) execSync(`rm -rf ${stuffDir}`);
+  args.push(`-4`);
   args.push(`-s ${stuffDir}`);
   settings.endpoint && args.push(`-e ${settings.endpoint}`);
   settings.port && args.push(`-b 127.0.0.1:${settings.port}`);
@@ -112,6 +112,7 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
     );
     if (connected) {
       win?.webContents.send("warp:connected", true);
+      
       execSync("networksetup -setsocksfirewallproxystate Wi-Fi on");
       execSync(
         `networksetup -setsocksfirewallproxy Wi-Fi 127.0.0.1 ${
@@ -126,6 +127,7 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
   });
 });
 
+
 ipcMain.on("warp:disconnect", () => {
   execSync("networksetup -setsocksfirewallproxystate Wi-Fi off");
   child?.kill();
@@ -137,6 +139,10 @@ ipcMain.on("app:quit", () => {
   app.exit();
 });
 
+app.on("before-quit", () => {
+  win?.webContents.send("app:will-quit")
+});
+
 ipcMain.on("app:path", (e) => {
   const appPath = app.getPath("home");
   e.returnValue = appPath;
@@ -144,7 +150,7 @@ ipcMain.on("app:path", (e) => {
 
 ipcMain.on("settings:set", (_, key, value) => {
   Storage.instance.set(key, value);
-  child?.kill();
+  // child?.kill();
 });
 
 ipcMain.on("settings:get", (e, key) => {

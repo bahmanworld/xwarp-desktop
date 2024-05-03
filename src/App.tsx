@@ -6,7 +6,14 @@ import {
 import React from "react";
 import { usePanelStack } from "./stores/useStack";
 import HomePanel from "./panels/HomePanel";
+
 FocusStyleManager.onlyShowFocusOnTabs();
+
+window.electron.willQuit(() => {
+  if (confirm("Xwarp will quit.\n\nQuit XWarp?\n")) {
+    window.electron.quit();
+  }
+});
 
 function App() {
   const [dark, setDark] = React.useState(false);

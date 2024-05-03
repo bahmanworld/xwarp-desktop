@@ -1,28 +1,16 @@
 import { usePanelStack } from "../stores/useStack";
 import SettingsPanel from "./SettingsPanel";
-import {
-  Github,
-  HardDriveDownload,
-  Info,
-  Settings,
-  Terminal,
-  X,
-} from "lucide-react";
-import {
-  Button,
-  ButtonGroup,
-  OverlayToaster,
-  Toast2,
-  Toaster,
-  Tooltip,
-} from "@blueprintjs/core";
+import { Github, Info, Settings, Terminal, X } from "lucide-react";
+import { Button, ButtonGroup, Tooltip } from "@blueprintjs/core";
 import AppLogo from "/logo.png";
 import ConnectionIcon from "/connection.png";
 import ConnectedIcon from "/connected.png";
-import { useWarp } from "../stores/useWarp";
+import { IFConfigCountryFlag, useWarp } from "../stores/useWarp";
 import PackageJSON from "../../package.json";
 import LogsPanel from "./LogsPanel";
 import AboutPanel from "./AboutPanel";
+import React from "react";
+import axios from "axios";
 
 const HomePanel = () => {
   const stack = usePanelStack();
@@ -113,8 +101,8 @@ const HomePanel = () => {
                   <img
                     src={ConnectionIcon}
                     style={{
-                      width: 100,
-                      height: 100,
+                      width: 80,
+                      height: 80,
                       filter: "drop-shadow(5px 5px 15px #000a)",
                     }}
                   />
@@ -123,8 +111,8 @@ const HomePanel = () => {
                   <img
                     src={ConnectedIcon}
                     style={{
-                      width: 130,
-                      height: 130,
+                      width: 100,
+                      height: 100,
                       filter: "drop-shadow(5px 10px 15px #0006)",
                     }}
                   />
@@ -135,7 +123,7 @@ const HomePanel = () => {
               <img
                 src={ConnectionIcon}
                 style={{
-                  width: 100,
+                  width: 80,
                   height: "auto",
                 }}
                 className={warp.connecting ? "animating" : ""}
@@ -144,7 +132,38 @@ const HomePanel = () => {
           </button>
         </div>
 
-        <ButtonGroup minimal style={{ marginBottom: 10 }}>
+        <div
+          style={{
+            padding: 20,
+            opacity: warp.connected && warp.ifconfig ? 1 : 0.6,
+            fontSize: 12,
+            marginTop: -25,
+          }}
+        >
+          {!warp.connected && !warp.connecting && "Disconnected"}
+          {warp.connecting && "Connecting..."}
+          {warp.connected && !warp.ifconfig && "Getting IP..."}
+          {warp.connected && warp.ifconfig && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 3,
+              }}
+            >
+              <div>
+                {
+                  IFConfigCountryFlag?.find(
+                    (c) => (c.id = warp.ifconfig?.country_iso)
+                  )?.flag
+                }
+              </div>
+              <div>{warp.ifconfig?.country}</div>
+            </div>
+          )}
+        </div>
+
+        <ButtonGroup minimal style={{ marginBottom: 5 }}>
           <Tooltip compact content={"About..."}>
             <Button
               onClick={() => {
@@ -210,7 +229,7 @@ const HomePanel = () => {
             textAlign: "center",
           }}
         >
-          <div>Dahatu, Inc</div>
+          <div>Dahatu Corporation</div>
           <div style={{ fontSize: 8 }}>
             Copyright ©{new Date(Date.now()).getFullYear()}
           </div>

@@ -58,6 +58,10 @@ contextBridge.exposeInMainWorld("electron", {
     ipcRenderer.send("app:quit");
   },
 
+  willQuit: (callback: () => void) => {
+    ipcRenderer.on("app:will-quit", callback);
+  },
+
   logs: (callback: (data: any) => void) => {
     ipcRenderer.on("logs", (_, logs) => {
       callback(logs);

@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { useWarp } from "./useWarp";
 
 export const Countries = [
   { id: "AT", name: "Austria" },
@@ -61,7 +60,6 @@ export const useSettings = create<ISettings>()((set, get) => ({
     window.electron.settings.set(key, value);
     setTimeout(() => {
       set({ ...get() });
-      useWarp.getState().disconnect();
       window.electron.disconnect();
     }, 100);
   },
