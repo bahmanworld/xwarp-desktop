@@ -51,7 +51,6 @@ const HomePanel = () => {
   const warp = useWarp();
 
   const [flag, setFlag] = React.useState("");
-
   React.useMemo(() => {
     setFlag(
       countryFlags.find((c) => c.id == warp.ifconfig?.country_iso)?.flag || ""
