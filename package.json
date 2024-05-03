@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && electron-builder",
-    "release": "tsc && vite build && electron-builder",
+    "release": "tsc && vite build && electron-builder --macos",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "git": "git add . && git commit -m \"some changes\" && git push"
