@@ -33,7 +33,7 @@ html:after {
   top: 0;
   left: 0;
   right: 0;
-  height: 30px;
+  height: 40px;
   -webkit-app-region: drag;
 }
 

@@ -123,7 +123,7 @@ const HomePanel = () => {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            marginBottom: 50,
+            marginBottom: 40,
           }}
         >
           <button
@@ -178,7 +178,7 @@ const HomePanel = () => {
         <div
           style={{
             position: "fixed",
-            bottom: 90,
+            bottom: 100,
             left: 0,
             right: 0,
             display: "flex",
@@ -197,7 +197,7 @@ const HomePanel = () => {
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: 5,
+                  gap: 10,
                 }}
               >
                 <div style={{ fontSize: 30 }}>{flag}</div>
@@ -207,10 +207,12 @@ const HomePanel = () => {
                     alignItems: "start",
                     justifyContent: "start",
                     flexDirection: "column",
-                    gap: 2,
+                    gap: 1,
                   }}
                 >
-                  <div>{warp.ifconfig?.country}</div>
+                  <div style={{ fontWeight: "bold" }}>
+                    {warp.ifconfig?.country}
+                  </div>
                   <div style={{ fontSize: 10, opacity: 0.6 }}>
                     {warp.ifconfig?.ip}
                   </div>
