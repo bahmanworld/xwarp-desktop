@@ -41,42 +41,42 @@ jobs:
             env:
               GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
-          - name: Determine artifact filename
-            id: set_artifact_filename
-            run: |
-                if [ "${{ runner.os }}" = "Linux" ]; then
-                    echo "::set-output name=filename::dist_electron/*.AppImage"
-                    echo "::set-output name=appName::XWarp.AppImage"
-                elif [ "${{ runner.os }}" = "macOS" ]; then
-                    echo "::set-output name=filename::dist_electron/*.dmg"
-                    echo "::set-output name=appName::XWarp.dmg"
-                elif [ "${{ runner.os }}" = "Windows" ]; then
-                    echo "::set-output name=filename::dist_electron/*.exe"
-                    echo "::set-output name=appName::XWarp.exe"
-                fi
-            shell: bash
+          # - name: Determine artifact filename
+          #   id: set_artifact_filename
+          #   run: |
+          #       if [ "${{ runner.os }}" = "Linux" ]; then
+          #           echo "::set-output name=filename::dist_electron/*.AppImage"
+          #           echo "::set-output name=appName::XWarp.AppImage"
+          #       elif [ "${{ runner.os }}" = "macOS" ]; then
+          #           echo "::set-output name=filename::dist_electron/*.dmg"
+          #           echo "::set-output name=appName::XWarp.dmg"
+          #       elif [ "${{ runner.os }}" = "Windows" ]; then
+          #           echo "::set-output name=filename::dist_electron/*.exe"
+          #           echo "::set-output name=appName::XWarp.exe"
+          #       fi
+          #   shell: bash
 
-          # Publish build
-          - name: Create a Release
-            if: github.run_number == 1
-            id: create_release
-            uses: actions/create-release@v1
-            env:
-              GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-            with:
-              tag_name: ${{ github.ref }}
-              release_name: XWarp-${{ github.ref }}
-              draft: false
-              prerelease: false
-    
-          # # Upload binaries to release
-          # - name: Upload Release Asset
-          #   uses: svenstaro/upload-release-action@v2
+          # # Publish build
+          # - name: Create a Release
+          #   if: github.run_number == 1
+          #   id: create_release
+          #   uses: actions/create-release@v1
+          #   env:
+          #     GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           #   with:
-          #       repo_token: ${{ secrets.GITHUB_TOKEN }}
-          #       # file: ${{github.workspace}}/${{ steps.set_artifact_filename.outputs.filename }}
-          #       file: ./${{ steps.set_artifact_filename.outputs.filename }}
-          #       asset_name: ${{ steps.set_artifact_filename.outputs.appName }}
-          #       tag: ${{ github.ref }}
-          #       overwrite: true
-          #       file_glob: true
+          #     tag_name: ${{ github.ref }}
+          #     release_name: XWarp-${{ github.ref }}
+          #     draft: false
+          #     prerelease: false
+    
+          # Upload binaries to release
+          - name: Upload Release Asset
+            uses: svenstaro/upload-release-action@v2
+            with:
+                repo_token: ${{ secrets.GH_TOKEN }}
+                # file: ${{github.workspace}}/${{ steps.set_artifact_filename.outputs.filename }}
+                file: ./build/1.0.2/${{ steps.set_artifact_filename.outputs.filename }}
+                asset_name: ${{ steps.set_artifact_filename.outputs.appName }}
+                tag: ${{ github.ref }}
+                overwrite: true
+                file_glob: true

@@ -7,7 +7,7 @@
   asar: false,
   productName: "XWarp",
   directories: {
-    output: "release/${version}",
+    output: "build/${version}",
   },
   files: ["dist", "dist-electron"],
   mac: {
