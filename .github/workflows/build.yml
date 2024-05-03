@@ -19,5 +19,8 @@ jobs:
         with:
           node-version: 20.x
 
-      - name: Build/release Electron app
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Release Builds
         run: npm run release
