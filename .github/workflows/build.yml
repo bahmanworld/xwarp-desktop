@@ -1,9 +1,6 @@
 name: Publish Release
 
-on:
-    push:
-      tags:
-        - 'v*'
+on: push
 
 jobs:
     build_and_release:
