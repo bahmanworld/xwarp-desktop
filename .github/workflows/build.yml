@@ -24,3 +24,6 @@ jobs:
 
       - name: Build MacOS App Arm64
         run: npm run build:macos-arm64
+        with: 
+          github_token: ${{ secrets.GH_TOKEN }}
+          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
