@@ -5,16 +5,58 @@ import { Button, ButtonGroup, Tooltip } from "@blueprintjs/core";
 import AppLogo from "/logo.png";
 import ConnectionIcon from "/connection.png";
 import ConnectedIcon from "/connected.png";
-import { IFConfigCountryFlag, useWarp } from "../stores/useWarp";
+import { useWarp } from "../stores/useWarp";
 import PackageJSON from "../../package.json";
 import LogsPanel from "./LogsPanel";
 import AboutPanel from "./AboutPanel";
 import React from "react";
 import axios from "axios";
 
+export const countryFlags = [
+  { id: "AT", flag: "🇦🇹" },
+  { id: "BE", flag: "🇧🇪" },
+  { id: "BG", flag: "🇧🇬" },
+  { id: "BR", flag: "🇧🇷" },
+  { id: "CA", flag: "🇨🇦" },
+  { id: "CH", flag: "🇨🇳" },
+  { id: "CZ", flag: "🇨🇿" },
+  { id: "DE", flag: "🇩🇪" },
+  { id: "DK", flag: "🇩🇰" },
+  { id: "EE", flag: "🇪🇪" },
+  { id: "ES", flag: "🇪🇸" },
+  { id: "FI", flag: "🇫🇮" },
+  { id: "FR", flag: "🇫🇷" },
+  { id: "GB", flag: "🇬🇧" },
+  { id: "HU", flag: "🇭🇺" },
+  { id: "IR", flag: "🇮🇷" },
+  { id: "IE", flag: "🇮🇪" },
+  { id: "IN", flag: "🇮🇳" },
+  { id: "IT", flag: "🇮🇹" },
+  { id: "JP", flag: "🇯🇵" },
+  { id: "LV", flag: "🇱🇻" },
+  { id: "NL", flag: "🇳🇱" },
+  { id: "NO", flag: "🇳🇴" },
+  { id: "PL", flag: "🇵🇱" },
+  { id: "RO", flag: "🇷🇴" },
+  { id: "RS", flag: "🇷🇸" },
+  { id: "SE", flag: "🇸🇪" },
+  { id: "SG", flag: "🇸🇬" },
+  { id: "SK", flag: "🇸🇰" },
+  { id: "UA", flag: "🇺🇦" },
+  { id: "US", flag: "🇺🇸" },
+];
+
 const HomePanel = () => {
   const stack = usePanelStack();
   const warp = useWarp();
+
+  const [flag, setFlag] = React.useState("");
+
+  React.useMemo(() => {
+    setFlag(
+      countryFlags.find((c) => c.id == warp.ifconfig?.country_iso)?.flag || ""
+    );
+  }, [warp.ifconfig]);
 
   return (
     <div
@@ -81,6 +123,7 @@ const HomePanel = () => {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
+            marginBottom: 50,
           }}
         >
           <button
@@ -134,36 +177,49 @@ const HomePanel = () => {
 
         <div
           style={{
-            padding: 20,
-            opacity: warp.connected && warp.ifconfig ? 1 : 0.6,
+            position: "fixed",
+            bottom: 90,
+            left: 0,
+            right: 0,
+            display: "flex",
+            justifyItems: "center",
+            justifyContent: "center",
             fontSize: 12,
-            marginTop: -25,
           }}
         >
           {!warp.connected && !warp.connecting && "Disconnected"}
           {warp.connecting && "Connecting..."}
           {warp.connected && !warp.ifconfig && "Getting IP..."}
-          {warp.connected && warp.ifconfig && (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 3,
-              }}
-            >
-              <div>
-                {
-                  IFConfigCountryFlag?.find(
-                    (c) => (c.id = warp.ifconfig?.country_iso)
-                  )?.flag
-                }
+          {warp.connected &&
+            warp.ifconfig &&
+            warp.ifconfig?.country_iso !== "IR" && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 5,
+                }}
+              >
+                <div style={{ fontSize: 30 }}>{flag}</div>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "start",
+                    justifyContent: "start",
+                    flexDirection: "column",
+                    gap: 2,
+                  }}
+                >
+                  <div>{warp.ifconfig?.country}</div>
+                  <div style={{ fontSize: 10, opacity: 0.6 }}>
+                    {warp.ifconfig?.ip}
+                  </div>
+                </div>
               </div>
-              <div>{warp.ifconfig?.country}</div>
-            </div>
-          )}
+            )}
         </div>
 
-        <ButtonGroup minimal style={{ marginBottom: 5 }}>
+        <ButtonGroup minimal style={{ marginBottom: 10 }}>
           <Tooltip compact content={"About..."}>
             <Button
               onClick={() => {

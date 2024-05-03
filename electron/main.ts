@@ -17,7 +17,7 @@ const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
 let child: ChildProcessWithoutNullStreams | null = null;
 
 const WIDTH = 320;
-const HEIGHT = 530;
+const HEIGHT = 550;
 
 function createWindow() {
   new Tray(path.join(process.env.DIST, "logo.png"));
