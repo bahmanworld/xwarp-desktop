@@ -1,13 +1,20 @@
 {
   "name": "xwarp",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "appId": "bahman.world.xwarp",
   "main": "dist-electron/main.js",
+  "author": {
+    "email": "bahman.world@gmail.com",
+    "name": "Bahman World",
+    "url": "https://bahmanworld.com"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && electron-builder",
-    "release": "tsc && vite build && electron-builder --macos",
+    "release:macos": "tsc && vite build && electron-builder --macos",
+    "release:windows": "tsc && vite build && electron-builder --windows",
+    "release:linux": "tsc && vite build && electron-builder --linux",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "git": "git add . && git commit -m \"some changes\" && git push"
