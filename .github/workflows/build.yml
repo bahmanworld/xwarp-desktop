@@ -1,20 +1,26 @@
 name: Publish Release
 
 on:
-    push:
-      tags:
-        - 'v*'
+  push:
+    tags:
+      - "v*"
 
 jobs:
   build_and_release:
-    permissions: write-all
+    permissions:
+      contents: write
 
-    # runs-on: ${{ matrix.os }}
-    runs-on: macos-latest
+    runs-on: ${{ matrix.os }}
 
-    # strategy:
-    #   matrix:
-    #     os: [ubuntu-latest, macos-latest, windows-latest]
+    strategy:
+      matrix:
+        os:
+          - os: macos-latest
+            file: xwarp-${{ github.ref_name }}-mac-arm64.dmg
+          - os: windows-latest
+            file: xwarp-${{ github.ref_name }}-windows-arm64.exe
+          - os: linux-latest
+            file: xwarp-${{ github.ref_name }}-linux-arm64.appimage
 
     steps:
       - name: Checkout code
@@ -29,30 +35,30 @@ jobs:
         run: npm ci
 
       - name: Build MacOS App
-        # if: matrix.os == 'macos-latest' 
-        run: npm run release:macos
+        # if: matrix.os == 'macos-latest'
+        run: npm run release:macos:arm64
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      # - name: Build Windows App
-      #   if: matrix.os == 'windows-latest'
-      #   run: npm run release:windows
-      #   env:
-      #     GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      - name: Build Windows App
+        # if: matrix.os == 'windows-latest'
+        run: npm run release:windows:arm64
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      # - name: Build Linux App
-      #   if: matrix.os == 'linux-latest'
-      #   run: npm run release:linux
-      #   env:
-      #     GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      - name: Build Linux App
+        # if: matrix.os == 'linux-latest'
+        run: npm run release:linux:arm64
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       # Upload binaries to release
       - name: Upload Release Asset
         uses: svenstaro/upload-release-action@v2
         with:
-            repo_token: ${{ secrets.GH_TOKEN }}
-            file: ./build/XWarp-Mac-1.0.0-Installer.dmg
-            asset_name: ./build/XWarp-Mac-1.0.0-Installer.dmg
-            tag: ${{ github.ref }}
-            overwrite: true
-            file_glob: true
+          repo_token: ${{ secrets.GH_TOKEN }}
+          file: ./build/${{ github.ref_name }}/${{ matrix.file }}
+          asset_name: ${{ matrix.file }}
+          tag: ${{ github.ref }}
+          overwrite: true
+          file_glob: true

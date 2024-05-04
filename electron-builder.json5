@@ -5,15 +5,14 @@
   $schema: "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
   appId: "xwarp",
   asar: false,
-  productName: "XWarp",
+  productName: "xwarp",
   directories: {
-    output: "build/v${version}",
-    output: "build",
+    output: "build/v${version}"
   },
   files: ["dist", "dist-electron"],
   mac: {
     target: ["dmg"],
-    artifactName: "${productName}-Mac-${version}-Installer.${ext}",
+    artifactName: "${productName}-v${version}-macos-${arch}.${ext}",
     icon: "public/logo.icns",
   },
   win: {
@@ -23,7 +22,7 @@
         arch: ["x64"],
       },
     ],
-    artifactName: "${productName}-Windows-${version}-Setup.${ext}",
+    artifactName: "${productName}-v${version}-windows-${arch}.${ext}",
     icon: "public/logo.ico",
   },
   nsis: {
@@ -34,7 +33,7 @@
   },
   linux: {
     target: ["AppImage"],
-    artifactName: "${productName}-Linux-${version}.${ext}",
+    artifactName: "${productName}-v${version}-linux-${arch}.${ext}",
     icon: "public/logo.ico",
   },
 }
