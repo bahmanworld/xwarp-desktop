@@ -6,7 +6,7 @@ on:
       - "v*"
 
 jobs:
-  build_and_release:
+  release:
     permissions:
       contents: write
 
@@ -23,10 +23,10 @@ jobs:
             file: xwarp-${{ github.ref_name }}-windows-arm64.exe
           - os: windows-latest
             file: xwarp-${{ github.ref_name }}-windows-x64.exe
-          - os: linux-latest
-            file: xwarp-${{ github.ref_name }}-linux-arm64.appimage
-          - os: linux-latest
-            file: xwarp-${{ github.ref_name }}-linux-x64.appimage
+          - os: ubuntu-latest
+            file: xwarp-${{ github.ref_name }}-linux-arm64.AppImage
+          - os: ubuntu-latest
+            file: xwarp-${{ github.ref_name }}-linux-x64.AppImage
 
     steps:
       - name: Checkout code
