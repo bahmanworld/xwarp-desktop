@@ -35,19 +35,19 @@ jobs:
         run: npm ci
 
       - name: Build MacOS App
-        # if: matrix.os == 'macos-latest'
+        if: ${{ matrix.os }} == 'macos-latest'
         run: npm run release:macos:arm64
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Build Windows App
-        # if: matrix.os == 'windows-latest'
+        if: ${{ matrix.os }} == 'windows-latest'
         run: npm run release:windows:arm64
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Build Linux App
-        # if: matrix.os == 'linux-latest'
+        if: ${{ matrix.os }} == 'linux-latest'
         run: npm run release:linux:arm64
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
