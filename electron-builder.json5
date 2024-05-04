@@ -24,6 +24,7 @@
     ],
     artifactName: "${productName}-v${version}-windows-${arch}.${ext}",
     icon: "public/logo.ico",
+    sign: "module:app-builder-lib/out/macPackager.js"
   },
   nsis: {
     oneClick: false,
