@@ -13,12 +13,7 @@
   mac: {
     target: ["dmg"],
     artifactName: "${productName}-v${version}-macos-${arch}.${ext}",
-    icon: "public/logo.icns",
-    "afterSign": "electron-builder-notarize",
-    "mac": {
-      "hardenedRuntime": true,
-      "entitlements": "./node_modules/electron-builder-notarize/entitlements.mac.inherit.plist",
-    }
+    icon: "public/logo.icns"
   },
   win: {
     target: [
@@ -37,7 +32,7 @@
     deleteAppDataOnUninstall: false,
   },
   linux: {
-    target: ["AppImage"],
+    target: ["AppImage", "deb"],
     artifactName: "${productName}-v${version}-linux-${arch}.${ext}"
   },
 }

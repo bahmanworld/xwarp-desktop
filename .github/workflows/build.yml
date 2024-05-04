@@ -34,6 +34,7 @@ jobs:
             file: xwarp-${{ github.ref_name }}-linux-x86_64.AppImage
             arch: x64
 
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
