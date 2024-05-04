@@ -50,8 +50,8 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
             repo_token: ${{ secrets.GH_TOKEN }}
-            file: build/XWarp-Mac-1.0.5-Installer.dmg
-            asset_name: build/XWarp-Mac-1.0.5-Installer.dmg
+            file: ./build/XWarp-Mac-1.0.5-Installer.dmg
+            asset_name: ./build/XWarp-Mac-1.0.5-Installer.dmg
             tag: ${{ github.ref }}
             overwrite: true
             file_glob: true
