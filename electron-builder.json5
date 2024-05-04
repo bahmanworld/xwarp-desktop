@@ -32,7 +32,7 @@
     deleteAppDataOnUninstall: false,
   },
   linux: {
-    target: ["AppImage", "deb"],
+    target: ["AppImage"],
     artifactName: "${productName}-v${version}-linux-${arch}.${ext}"
   },
 }

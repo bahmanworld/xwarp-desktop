@@ -39,45 +39,45 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20.x
 
-      - name: install dependencies
+      - name: Intstall Dependencies
         run: npm ci
 
-      - name: Build MacOS arm64 App
+      - name: Build MacOS-arm64 App
         if: (matrix.os == 'macos-latest') && (matrix.arch == 'arm64')
         run: npm run release:macos:arm64
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build MacOS x64 App
+      - name: Build MacOS-x64 App
         if: (matrix.os == 'macos-latest') && (matrix.arch == 'x64')
         run: npm run release:macos:x64
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build Windows arm64 App
+      - name: Build Windows-arm64 App
         if: (matrix.os == 'windows-latest') && (matrix.arch == 'arm64')
         run: npm run release:windows:arm64
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build Windows x64 App
+      - name: Build Windows-x64 App
         if: (matrix.os == 'windows-latest') && (matrix.arch == 'x64')
         run: npm run release:windows:x64
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build Linux arm64 App
+      - name: Build Linux-arm64 App
         if: (matrix.os == 'ubuntu-latest') && (matrix.arch == 'arm64')
         run: npm run release:linux:arm64
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build Linux x64 App
+      - name: Build Linux-x64 App
         if: (matrix.os == 'ubuntu-latest') && (matrix.arch == 'x64')
         run: npm run release:linux:x64
         env:
