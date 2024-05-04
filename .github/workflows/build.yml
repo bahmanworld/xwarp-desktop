@@ -28,7 +28,7 @@ jobs:
         run: npm ci
 
       - name: Build MacOS App
-        if: matrix.os == 'macos-latest' 
+        # if: matrix.os == 'macos-latest' 
         run: npm run release:macos
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
