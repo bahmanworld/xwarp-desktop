@@ -111,14 +111,13 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
       `address=127.0.0.1:${settings.port || 8086}`
     );
     if (connected) {
-      win?.webContents.send("warp:connected", true);
-      
       execSync("networksetup -setsocksfirewallproxystate Wi-Fi on");
       execSync(
         `networksetup -setsocksfirewallproxy Wi-Fi 127.0.0.1 ${
           settings.port || 8086
         }`
       );
+      win?.webContents.send("warp:connected", true);
     }
   });
 
@@ -126,7 +125,6 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
     child?.kill();
   });
 });
-
 
 ipcMain.on("warp:disconnect", () => {
   execSync("networksetup -setsocksfirewallproxystate Wi-Fi off");
@@ -140,7 +138,7 @@ ipcMain.on("app:quit", () => {
 });
 
 app.on("before-quit", () => {
-  win?.webContents.send("app:will-quit")
+  win?.webContents.send("app:will-quit");
 });
 
 ipcMain.on("app:path", (e) => {

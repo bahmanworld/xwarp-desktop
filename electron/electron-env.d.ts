@@ -18,7 +18,7 @@ interface Window {
     };
     connect: (
       settings: any,
-      callback: (e: Electron.IpcRendererEvent, args: any[]) => void
+      callback: (e: Electron.IpcRendererEvent, ...args: any[]) => void
     ) => void;
     disconnect: () => void;
     quit: () => void;

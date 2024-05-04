@@ -190,8 +190,7 @@ const HomePanel = () => {
           {warp.connecting && "Connecting..."}
           {warp.connected && !warp.ifconfig && "Getting IP..."}
           {warp.connected &&
-            warp.ifconfig &&
-            warp.ifconfig?.country_iso !== "IR" && (
+            warp.ifconfig && (
               <div
                 style={{
                   display: "flex",

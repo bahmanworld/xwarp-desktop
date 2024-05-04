@@ -2,25 +2,25 @@ import { create } from "zustand";
 import { useSettings } from "./useSettings";
 import axios from "axios";
 
-
 type IFConfig = {
-  ip?: string
-  country?: string,
-  country_iso?: string
-}
+  ip?: string;
+  country?: string;
+  country_iso?: string;
+};
 
 type WarpProps = {
   log: string;
+  ifconfig?: IFConfig | null;
   connected: boolean;
   connecting: boolean;
   connect: () => void;
   disconnect: () => void;
   clearLogs: () => void;
-  ifconfig?: IFConfig | null;
 };
 
 export const useWarp = create<WarpProps>()((set, get) => ({
   log: "",
+  ifconfig: null,
   connected: false,
   connecting: false,
   connect: () => {
@@ -36,14 +36,12 @@ export const useWarp = create<WarpProps>()((set, get) => ({
     window.electron.connect(
       useSettings.getState().getSettings(),
       (_, connected) => {
-        if (connected) {
-          set({ connected: true, connecting: false });
-          axios.get("https://ifconfig.co/json").then((res) => {
-            set({ ifconfig: res.data });
+        set({ connected: connected, connecting: false });
+        fetch("https://ifconfig.co/json")
+          .then((res) => res.json())
+          .then((res) => {
+            set({ ifconfig: res as IFConfig });
           });
-        } else {
-          set({ connected: false, connecting: false });
-        }
       }
     );
   },
@@ -54,5 +52,4 @@ export const useWarp = create<WarpProps>()((set, get) => ({
   clearLogs: () => {
     set({ log: "" });
   },
-  ifconfig: null,
 }));
