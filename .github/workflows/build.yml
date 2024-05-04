@@ -17,16 +17,22 @@ jobs:
         include:
           - os: macos-latest
             file: xwarp-${{ github.ref_name }}-macos-arm64.dmg
+            arch: arm64
           - os: macos-latest
             file: xwarp-${{ github.ref_name }}-macos-x64.dmg
+            arch: x64
           - os: windows-latest
             file: xwarp-${{ github.ref_name }}-windows-arm64.exe
+            arch: arm64
           - os: windows-latest
             file: xwarp-${{ github.ref_name }}-windows-x64.exe
+            arch: x64
           - os: ubuntu-latest
             file: xwarp-${{ github.ref_name }}-linux-arm64.AppImage
+            arch: arm64
           - os: ubuntu-latest
             file: xwarp-${{ github.ref_name }}-linux-x64.AppImage
+            arch: x64
 
     steps:
       - name: Checkout code
@@ -41,13 +47,13 @@ jobs:
         run: npm ci
 
       - name: Build MacOS arm64 App
-        if: matrix.os == 'macos-latest'
+        if: (matrix.os == 'macos-latest') && (matrix.arch == 'arm64')
         run: npm run release:macos:arm64
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Build MacOS x64 App
-        if: matrix.os == 'macos-latest'
+        if: (matrix.os == 'macos-latest') && (matrix.arch == 'x64')
         run: npm run release:macos:x64
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -64,17 +70,17 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      - name: Build Linux arm64 App
-        if: matrix.os == 'linux-latest'
-        run: npm run release:linux:arm64
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      # - name: Build Linux arm64 App
+      #   if: matrix.os == 'linux-latest'
+      #   run: npm run release:linux:arm64
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      - name: Build Linux x64 App
-        if: matrix.os == 'linux-latest'
-        run: npm run release:linux:x64
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      # - name: Build Linux x64 App
+      #   if: matrix.os == 'linux-latest'
+      #   run: npm run release:linux:x64
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       # Upload binaries to release
       - name: Upload Release Asset
