@@ -23,8 +23,7 @@
       },
     ],
     artifactName: "${productName}-v${version}-windows-${arch}.${ext}",
-    icon: "public/logo.ico",
-    sign: "module:app-builder-lib/out/macPackager.js"
+    icon: "public/logo.ico"
   },
   nsis: {
     oneClick: false,
