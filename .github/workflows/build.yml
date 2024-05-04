@@ -31,7 +31,7 @@ jobs:
             file: xwarp-${{ github.ref_name }}-linux-arm64.AppImage
             arch: arm64
           - os: ubuntu-latest
-            file: xwarp-${{ github.ref_name }}-linux-x64.AppImage
+            file: xwarp-${{ github.ref_name }}-linux-x86_64.AppImage
             arch: x64
 
     steps:
@@ -59,28 +59,28 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Build Windows arm64 App
-        if: matrix.os == 'windows-latest'
+        if: (matrix.os == 'windows-latest') && (matrix.arch == 'arm64')
         run: npm run release:windows:arm64
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Build Windows x64 App
-        if: matrix.os == 'windows-latest'
+        if: (matrix.os == 'windows-latest') && (matrix.arch == 'x64')
         run: npm run release:windows:x64
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      # - name: Build Linux arm64 App
-      #   if: matrix.os == 'linux-latest'
-      #   run: npm run release:linux:arm64
-      #   env:
-      #     GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      - name: Build Linux arm64 App
+        if: (matrix.os == 'linux-latest') && (matrix.arch == 'arm64')
+        run: npm run release:linux:arm64
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      # - name: Build Linux x64 App
-      #   if: matrix.os == 'linux-latest'
-      #   run: npm run release:linux:x64
-      #   env:
-      #     GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      - name: Build Linux x64 App
+        if: (matrix.os == 'linux-latest') && (matrix.arch == 'x64')
+        run: npm run release:linux:x64
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       # Upload binaries to release
       - name: Upload Release Asset

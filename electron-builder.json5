@@ -33,7 +33,6 @@
   },
   linux: {
     target: ["AppImage"],
-    artifactName: "${productName}-v${version}-linux-${arch}.${ext}",
-    icon: "public/logo.ico",
+    artifactName: "${productName}-v${version}-linux-${arch}.${ext}"
   },
 }
