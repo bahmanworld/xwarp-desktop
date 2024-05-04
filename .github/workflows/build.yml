@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        os:
+        include:
           - os: macos-latest
             file: xwarp-${{ github.ref_name }}-mac-arm64.dmg
           - os: windows-latest
