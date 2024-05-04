@@ -8,6 +8,7 @@
   productName: "XWarp",
   directories: {
     output: "build/v${version}",
+    output: "build",
   },
   files: ["dist", "dist-electron"],
   mac: {
