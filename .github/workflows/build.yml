@@ -8,11 +8,12 @@ on:
 jobs:
   build_and_release:
 
-    runs-on: ${{ matrix.os }}
+    # runs-on: ${{ matrix.os }}
+    runs-on: macos-latest
 
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+    # strategy:
+    #   matrix:
+    #     os: [ubuntu-latest, macos-latest, windows-latest]
 
     steps:
       - name: Checkout code
@@ -32,17 +33,17 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      - name: Build Windows App
-        if: matrix.os == 'windows-latest'
-        run: npm run release:windows
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      # - name: Build Windows App
+      #   if: matrix.os == 'windows-latest'
+      #   run: npm run release:windows
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      - name: Build Linux App
-        if: matrix.os == 'linux-latest'
-        run: npm run release:linux
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      # - name: Build Linux App
+      #   if: matrix.os == 'linux-latest'
+      #   run: npm run release:linux
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       # Upload binaries to release
       - name: Upload Release Asset
