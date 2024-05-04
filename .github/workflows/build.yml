@@ -71,13 +71,13 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Build Linux arm64 App
-        if: (matrix.os == 'linux-latest') && (matrix.arch == 'arm64')
+        if: (matrix.os == 'ubuntu-latest') && (matrix.arch == 'arm64')
         run: npm run release:linux:arm64
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Build Linux x64 App
-        if: (matrix.os == 'linux-latest') && (matrix.arch == 'x64')
+        if: (matrix.os == 'ubuntu-latest') && (matrix.arch == 'x64')
         run: npm run release:linux:x64
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
