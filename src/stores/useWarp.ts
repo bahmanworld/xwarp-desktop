@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { useSettings } from "./useSettings";
-import axios from "axios";
 
 type IFConfig = {
   ip?: string;
