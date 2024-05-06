@@ -1,6 +1,5 @@
-import { app, BrowserWindow, ipcMain, Tray, shell } from "electron";
+import { app, BrowserWindow, ipcMain, shell } from "electron";
 import path from "node:path";
-import fs from "fs";
 import { spawn, execSync, ChildProcessWithoutNullStreams } from "child_process";
 import { Storage } from "./Storage";
 import { download } from "./utils";
@@ -8,20 +7,18 @@ import { download } from "./utils";
 process.env.DIST = path.join(__dirname, "../dist");
 process.env.VITE_PUBLIC = app.isPackaged
   ? process.env.DIST
-  : path.join(process.env.DIST, "../public");
-
-let win: BrowserWindow | null;
-// 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
+  : path.join(process.env.DIST, "../public"); // 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
 const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
 
+let win: BrowserWindow | null;
 let child: ChildProcessWithoutNullStreams | null = null;
+let isConnected = false;
+let isHidden = false;
 
 const WIDTH = 320;
 const HEIGHT = 550;
 
 function createWindow() {
-  new Tray(path.join(process.env.DIST, "logo.png"));
-
   win = new BrowserWindow({
     icon: process.env.VITE_PUBLIC + "logo.png",
     maximizable: false,
@@ -45,8 +42,10 @@ function createWindow() {
   });
 
   win?.on("close", (e) => {
-    e.preventDefault();
-    app?.hide();
+    if (isConnected) {
+      e.preventDefault();
+      app?.hide();
+    }
   });
 
   if (VITE_DEV_SERVER_URL) {
@@ -69,6 +68,13 @@ app.on("activate", (e) => {
   }
 });
 
+app.on("before-quit", (e) => {
+  if (isConnected) {
+    e.preventDefault();
+    win?.webContents.send("app:will-quit");
+  }
+});
+
 app.whenReady().then(createWindow);
 
 ipcMain.on("link:open", (_, url) => {
@@ -85,11 +91,10 @@ type SettingsArgs = {
 };
 
 ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
+  console.log("connecting...");
+  const stuffDir = path.join(app.getPath("home"), ".xwarp-cache");
   const args = [];
-  const stuffDir = path.join(app.getPath("home"), ".xwarp");
-  // if (fs.existsSync(stuffDir)) execSync(`rm -rf ${stuffDir}`);
-  args.push(`-4`);
-  args.push(`-s ${stuffDir}`);
+  args.push(`--cache-dir ${stuffDir}`);
   settings.endpoint && args.push(`-e ${settings.endpoint}`);
   settings.port && args.push(`-b 127.0.0.1:${settings.port}`);
   settings.key && args.push(`-k ${settings.key}`);
@@ -118,6 +123,7 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
         }`
       );
       win?.webContents.send("warp:connected", true);
+      isConnected = true;
     }
   });
 
@@ -129,16 +135,13 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
 ipcMain.on("warp:disconnect", () => {
   execSync("networksetup -setsocksfirewallproxystate Wi-Fi off");
   child?.kill();
+  isConnected = false;
 });
 
 ipcMain.on("app:quit", () => {
   execSync("networksetup -setsocksfirewallproxystate Wi-Fi off");
   child?.kill();
   app.exit();
-});
-
-app.on("before-quit", () => {
-  win?.webContents.send("app:will-quit");
 });
 
 ipcMain.on("app:path", (e) => {
