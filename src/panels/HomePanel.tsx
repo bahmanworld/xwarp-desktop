@@ -172,6 +172,7 @@ const HomePanel = () => {
               />
             )}
           </button>
+          
         </div>
 
         <div
@@ -188,7 +189,7 @@ const HomePanel = () => {
         >
           {!warp.connected && !warp.connecting && "Disconnected"}
           {warp.connecting && "Connecting..."}
-          {warp.connected && !warp.ifconfig && "Getting IP..."}
+          {warp.connected && !warp.ifconfig && "Retrieving IP..."}
           {warp.connected &&
             warp.ifconfig && (
               <div
@@ -268,7 +269,7 @@ const HomePanel = () => {
             <Button
               intent="danger"
               onClick={() => {
-                if (confirm("Force Quit Application?")) {
+                if (confirm("Force Quit?")) {
                   window.electron.quit();
                 }
               }}

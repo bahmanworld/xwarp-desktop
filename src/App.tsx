@@ -10,7 +10,7 @@ import HomePanel from "./panels/HomePanel";
 FocusStyleManager.onlyShowFocusOnTabs();
 
 window.electron.willQuit(() => {
-  if (confirm("Xwarp will quit.\n\nQuit XWarp?\n")) {
+  if (confirm("Warp is connected.\n\nQuit anyway?\n")) {
     window.electron.quit();
   }
 });

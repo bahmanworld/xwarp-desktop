@@ -1,4 +1,11 @@
-import { app, BrowserWindow, ipcMain, shell } from "electron";
+import {
+  app,
+  BrowserWindow,
+  ipcMain,
+  nativeImage,
+  shell,
+  Tray,
+} from "electron";
 import path from "node:path";
 import { spawn, execSync, ChildProcessWithoutNullStreams } from "child_process";
 import { Storage } from "./Storage";
@@ -13,12 +20,12 @@ const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
 let win: BrowserWindow | null;
 let child: ChildProcessWithoutNullStreams | null = null;
 let isConnected = false;
-let isHidden = false;
 
 const WIDTH = 320;
 const HEIGHT = 550;
 
 function createWindow() {
+
   win = new BrowserWindow({
     icon: process.env.VITE_PUBLIC + "logo.png",
     maximizable: false,
