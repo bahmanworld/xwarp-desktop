@@ -13,7 +13,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     env:
-      WARP_URL: "https://github.com/bahmanworld/xwarp-plus/releases/tag/v1.1.4"
+      WARP_URL: "https://github.com/bahmanworld/xwarp-plus/releases/download/v1.1.4"
 
     strategy:
       fail-fast: false
