@@ -12,35 +12,39 @@ jobs:
 
     runs-on: ${{ matrix.os }}
 
+    env:
+      WARP_REPO: https://github.com/bahmanworld/xwarp-plus
+      WARP_VERSION: v1.1.4
+      WARP_URL: "$WARPREPO/rlease/tags/$WARP_VERSION"
+
     strategy:
       fail-fast: false
       matrix:
         include:
           - os: macos-latest
             file: xwarp-${{ github.ref_name }}-macos-arm64.dmg
-            warp: https://github.com/bahmanworld/xwarp-plus/releases/download/v1.1.4/warp-plus_darwin-arm64.zip
+            warp: warp-plus_darwin-arm64.zip
             arch: arm64
           - os: macos-latest
             file: xwarp-${{ github.ref_name }}-macos-x64.dmg
-            warp: https://github.com/bahmanworld/xwarp-plus/releases/download/v1.1.4/warp-plus_darwin-amd64.zip
+            warp: warp-plus_darwin-amd64.zip
             arch: x64
           - os: windows-latest
             file: xwarp-${{ github.ref_name }}-windows-arm64.exe
-            warp: https://github.com/bahmanworld/xwarp-plus/releases/download/v1.1.4/warp-plus_windows-arm64.zip
+            warp: warp-plus_windows-arm64.zip
             arch: arm64
           - os: windows-latest
             file: xwarp-${{ github.ref_name }}-windows-x64.exe
-            warp: https://github.com/bahmanworld/xwarp-plus/releases/download/v1.1.4/warp-plus_windows-amd64.zip
+            warp: warp-plus_windows-amd64.zip
             arch: x64
           - os: ubuntu-latest
             file: xwarp-${{ github.ref_name }}-linux-arm64.AppImage
-            warp: https://github.com/bahmanworld/xwarp-plus/releases/download/v1.1.4/warp-plus_linux-arm64.zip
+            warp: warp-plus_linux-arm64.zip
             arch: arm64
           - os: ubuntu-latest
             file: xwarp-${{ github.ref_name }}-linux-x86_64.AppImage
-            warp: https://github.com/bahmanworld/xwarp-plus/releases/download/v1.1.4/warp-plus_linux-amd64.zip
+            warp: warp-plus_linux-amd64.zip
             arch: x64
-
 
     steps:
       - name: Checkout code
@@ -55,16 +59,16 @@ jobs:
         run: npm ci
 
       - name: Download Warp-plus CLI
-        uses: suisei-cn/actions-download-file@818d6b7dc8fe73f2f924b6241f2b1134ca1377d9 
-        id: downloadfile  
+        uses: suisei-cn/actions-download-file@818d6b7dc8fe73f2f924b6241f2b1134ca1377d9
+        id: downloadfile
         with:
-          url: ${{ matrix.warp }}
+          url: ${{env.WARP_URL}}/${{ matrix.warp }}
           target: /
 
       - name: Extract Warp-Plus Zip File
         run: |
-          7z x /${{ matrix.warp }}
-          cp warp-plus ./public
+          7z x ${{ matrix.warp }}
+          cp ./${{ matrix.warp }}/warp-plus ./public
 
       - name: Build MacOS-arm64 App
         if: (matrix.os == 'macos-latest') && (matrix.arch == 'arm64')
