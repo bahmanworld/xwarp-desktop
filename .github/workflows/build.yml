@@ -62,7 +62,6 @@ jobs:
           download ${{ env.WARP_URL }}/${{ matrix.warp_zip_file }} > warp-plus.zip
           7z x warp-plus.zip
           cp ./warp-plus/warp-plus ./public
-        shell: true
 
       - name: Build MacOS-arm64 App
         if: (matrix.os == 'macos-latest') && (matrix.arch == 'arm64')
