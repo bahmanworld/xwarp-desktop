@@ -56,12 +56,10 @@ jobs:
       - name: Intstall Dependencies
         run: npm ci
 
-      - name: Download Warp-plus CLI
-        run: curl -o warp-plus.zip ${{ env.WARP_URL }}/${{ matrix.warp_zip_file }}
-        shell: true
-
-      - name: Extract and Copy Warp-Plus
+      - name: Download/Extract/Copy Warp-plus CLI
         run: |
+          npm install --global download-cli
+          download ${{ env.WARP_URL }}/${{ matrix.warp_zip_file }} > warp-plus.zip
           7z x warp-plus.zip
           cp ./warp-plus/warp-plus ./public
         shell: true
