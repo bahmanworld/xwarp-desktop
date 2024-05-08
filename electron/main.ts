@@ -10,6 +10,7 @@ import path from "node:path";
 import { spawn, execSync, ChildProcessWithoutNullStreams } from "child_process";
 import { Storage } from "./Storage";
 import { download } from "./utils";
+import fs from "fs";
 
 process.env.DIST = path.join(__dirname, "../dist");
 process.env.VITE_PUBLIC = app.isPackaged
@@ -25,7 +26,6 @@ const WIDTH = 320;
 const HEIGHT = 550;
 
 function createWindow() {
-
   win = new BrowserWindow({
     icon: process.env.VITE_PUBLIC + "logo.png",
     maximizable: false,
@@ -100,6 +100,7 @@ type SettingsArgs = {
 ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
   console.log("connecting...");
   const cacheDir = path.join(app.getPath("home"), ".xwarp-cache");
+  // if (fs.existsSync(cacheDir)) fs.rmSync(cacheDir, {force: true, recursive: true})
   const args = [];
   args.push(`--cache-dir ${cacheDir}`);
   settings.endpoint && args.push(`-e ${settings.endpoint}`);
@@ -108,23 +109,27 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
   settings.gool && args.push(`--gool`);
   settings.psiphon && args.push(`--cfon --country ${settings.country}`);
 
-  const commander = path.join(process.env.VITE_PUBLIC, 'bin', "warp-plus");
-  console.log(commander)
+  const commander = path.join(process.env.VITE_PUBLIC, "bin", "warp-plus");
+  console.log(commander);
   child = spawn(commander, args, { shell: true });
   child.stdout.setEncoding("utf8");
   child.stdout.on("data", (data) => {
     console.log(data);
-    win?.webContents.send("logs", (data as string).trim());
+    win?.webContents.send("logs", (data as string).trimEnd());
     const connected = (data as string).includes(
       `address=127.0.0.1:${settings.port || 8086}`
     );
     if (connected) {
-      execSync("networksetup -setsocksfirewallproxystate Wi-Fi on");
-      execSync(
-        `networksetup -setsocksfirewallproxy Wi-Fi 127.0.0.1 ${
-          settings.port || 8086
-        }`
-      );
+      if (process.platform == "win32") {
+        execSync(`netsh winhttp set proxy 127.0.0.1:${settings.port || 8086}`); // windows
+      } else if (process.platform == "darwin") {
+        execSync("networksetup -setsocksfirewallproxystate Wi-Fi on"); // macos
+        execSync(
+          `networksetup -setsocksfirewallproxy Wi-Fi 127.0.0.1 ${
+            settings.port || 8086
+          }`
+        ); // macos
+      }
       win?.webContents.send("warp:connected", true);
       isConnected = true;
     }
@@ -136,13 +141,21 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
 });
 
 ipcMain.on("warp:disconnect", () => {
-  execSync("networksetup -setsocksfirewallproxystate Wi-Fi off");
+  if (process.platform == "win32") {
+    execSync(`netsh winhttp reset proxy`); // windows
+  } else if (process.platform == "darwin") {
+    execSync("networksetup -setsocksfirewallproxystate Wi-Fi off"); // macos
+  }
   child?.kill();
   isConnected = false;
 });
 
 ipcMain.on("app:quit", () => {
-  execSync("networksetup -setsocksfirewallproxystate Wi-Fi off");
+  if (process.platform == "win32") {
+    execSync(`netsh winhttp reset proxy`); // windows
+  } else if (process.platform == "darwin") {
+    execSync("networksetup -setsocksfirewallproxystate Wi-Fi off"); // macos
+  }
   child?.kill();
   app.exit();
 });
