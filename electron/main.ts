@@ -108,9 +108,9 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
   settings.gool && args.push(`--gool`);
   settings.psiphon && args.push(`--cfon --country ${settings.country}`);
 
-  let flagName = "";
-  flagName = path.join(process.env.VITE_PUBLIC, 'bin', "warp-plus");
-  child = spawn(flagName, args, { shell: true });
+  const commander = path.join(process.env.VITE_PUBLIC, 'bin', "warp-plus");
+  console.log(commander)
+  child = spawn(commander, args, { shell: true });
   child.stdout.setEncoding("utf8");
   child.stdout.on("data", (data) => {
     console.log(data);
