@@ -21,27 +21,27 @@ jobs:
         include:
           - os: macos-latest
             file: xwarp-${{ github.ref_name }}-macos-arm64.dmg
-            warp: warp-plus_darwin-arm64.zip
+            warp_zip_file: warp-plus_darwin-arm64.zip
             arch: arm64
           - os: macos-latest
             file: xwarp-${{ github.ref_name }}-macos-x64.dmg
-            warp: warp-plus_darwin-amd64.zip
+            warp_zip_file: warp-plus_darwin-amd64.zip
             arch: x64
           - os: windows-latest
             file: xwarp-${{ github.ref_name }}-windows-arm64.exe
-            warp: warp-plus_windows-arm64.zip
+            warp_zip_file: warp-plus_windows-arm64.zip
             arch: arm64
           - os: windows-latest
             file: xwarp-${{ github.ref_name }}-windows-x64.exe
-            warp: warp-plus_windows-amd64.zip
+            warp_zip_file: warp-plus_windows-amd64.zip
             arch: x64
           - os: ubuntu-latest
             file: xwarp-${{ github.ref_name }}-linux-arm64.AppImage
-            warp: warp-plus_linux-arm64.zip
+            warp_zip_file: warp-plus_linux-arm64.zip
             arch: arm64
           - os: ubuntu-latest
             file: xwarp-${{ github.ref_name }}-linux-x86_64.AppImage
-            warp: warp-plus_linux-amd64.zip
+            warp_zip_file: warp-plus_linux-amd64.zip
             arch: x64
 
     steps:
@@ -57,16 +57,12 @@ jobs:
         run: npm ci
 
       - name: Download Warp-plus CLI
-        uses: suisei-cn/actions-download-file@818d6b7dc8fe73f2f924b6241f2b1134ca1377d9
-        id: downloadfile
-        with:
-          url: ${{env.WARP_URL}}/${{ matrix.warp }}
-          target: /
+        run: curl -O ${{ env.WARP_URL }}/${{ matrix.warp_zip_file }}
 
       - name: Extract Warp-Plus Zip File
         run: |
-          7z x ${{ matrix.warp }}
-          cp ./${{ matrix.warp }}/warp-plus ./public
+          7z x ${{ matrix.warp_zip_file }}
+          cp ./${{ matrix.warp_zip_file }}/warp-plus ./public
 
       - name: Build MacOS-arm64 App
         if: (matrix.os == 'macos-latest') && (matrix.arch == 'arm64')
