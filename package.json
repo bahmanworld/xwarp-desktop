@@ -2,6 +2,8 @@
   "name": "xwarp",
   "private": true,
   "version": "1.0.0",
+  "warp_plus_repo": "https://github.com/bahmanworld/xwarp-plus",
+  "warp_plus_version": "v1.1.4",
   "appId": "bahman.world.xwarp",
   "main": "dist-electron/main.js",
   "author": {
@@ -18,6 +20,7 @@
     "release:windows:x64": "tsc && vite build && electron-builder --windows --x64 --publish never",
     "release:linux:arm64": "tsc && vite build && electron-builder --linux --arm64 --publish never",
     "release:linux:x64": "tsc && vite build && electron-builder --linux --x64 --publish never",
+    "publish": "node action.js",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "git": "git add . && git commit -m \"some changes\" && git push"
@@ -45,7 +48,10 @@
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
+    "minimist": "^1.2.8",
+    "nodejs-file-downloader": "^4.12.1",
     "typescript": "^5.2.2",
+    "unzipper": "^0.11.5",
     "vite": "^5.1.6",
     "vite-plugin-electron": "^0.28.4",
     "vite-plugin-electron-renderer": "^0.14.5"

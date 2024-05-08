@@ -16,7 +16,7 @@ release
 *.local
 
 # Warp Plus
-public/warp-plus
+public/bin
 stuff
 ca.psiphon.PsiphonTunnel.tunnel-core
 

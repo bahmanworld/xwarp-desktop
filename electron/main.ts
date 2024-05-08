@@ -109,11 +109,7 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
   settings.psiphon && args.push(`--cfon --country ${settings.country}`);
 
   let flagName = "";
-  if (VITE_DEV_SERVER_URL) {
-    flagName = path.join(process.env.VITE_PUBLIC, "warp-plus");
-  } else {
-    flagName = path.join(process.env.DIST, "warp-plus");
-  }
+  flagName = path.join(process.env.VITE_PUBLIC, 'bin', "warp-plus");
   child = spawn(flagName, args, { shell: true });
   child.stdout.setEncoding("utf8");
   child.stdout.on("data", (data) => {

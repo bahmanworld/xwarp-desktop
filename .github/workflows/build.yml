@@ -12,9 +12,6 @@ jobs:
 
     runs-on: ${{ matrix.os }}
 
-    env:
-      WARP_URL: "https://github.com/bahmanworld/xwarp-plus/releases/download/v1.1.4"
-
     strategy:
       fail-fast: false
       matrix:
@@ -58,12 +55,7 @@ jobs:
 
       - name: Download/Extract/Copy Warp-plus CLI
         run: |
-          npm install -g download-cli
-          download ${{ env.WARP_URL }}/${{ matrix.warp_zip_file }} > warp-plus.zip
-          npm install -g cross-zip-cli
-          cross-unzip ./warp-plus.zip ./
-          npm install -g cpy-cli
-          cpy ./warp-plus ./public
+          npm run publish -- --filename ${{ matrix.warp_zip_file }}
 
       - name: Build MacOS-arm64 App
         if: (matrix.os == 'macos-latest') && (matrix.arch == 'arm64')
