@@ -10,7 +10,7 @@
     output: "build/v${version}",
   },
   files: ["dist", "dist-electron"],
-  "afterSign": "electron-builder-notarize",
+  // "afterSign": "electron-builder-notarize",
   mac: {
     target: ["dmg"],
     artifactName: "${productName}-v${version}-macos-${arch}.${ext}",
