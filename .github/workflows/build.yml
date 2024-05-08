@@ -116,3 +116,11 @@ jobs:
         with:
           path: ./build/${{ github.ref_name }}/${{ matrix.file }}
           name: ${{ matrix.file }}
+
+      - uses: xresloader/upload-to-github-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          file: ${{ matrix.file }}
+          tags: true
+          draft: true
