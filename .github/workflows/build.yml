@@ -58,11 +58,11 @@ jobs:
 
       - name: Download/Extract/Copy Warp-plus CLI
         run: |
-          npm install --global download-cli
+          npm install -g download-cli
           download ${{ env.WARP_URL }}/${{ matrix.warp_zip_file }} > warp-plus.zip
           npm install -g cross-zip-cli
           cross-unzip ./warp-plus.zip ./warp-plus
-          npm install --global cpy-cli
+          npm install -g cpy-cli
           cpy ./warp-plus/warp-plus ./public
 
       - name: Build MacOS-arm64 App
