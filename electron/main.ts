@@ -99,9 +99,9 @@ type SettingsArgs = {
 
 ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
   console.log("connecting...");
-  const stuffDir = path.join(app.getPath("home"), ".xwarp-cache");
+  const cacheDir = path.join(app.getPath("home"), ".xwarp-cache");
   const args = [];
-  args.push(`--cache-dir ${stuffDir}`);
+  args.push(`--cache-dir ${cacheDir}`);
   settings.endpoint && args.push(`-e ${settings.endpoint}`);
   settings.port && args.push(`-b 127.0.0.1:${settings.port}`);
   settings.key && args.push(`-k ${settings.key}`);

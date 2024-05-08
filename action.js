@@ -4,7 +4,7 @@ const path = require("path");
 const process = require("process");
 const minimist = require("minimist")(process.argv);
 const Downloader = require("nodejs-file-downloader");
-const unzipper = require("unzipper");
+const AdmZip = require("adm-zip");
 const json = require("./package.json");
 
 const args = {
@@ -29,9 +29,8 @@ const runAction = async () => {
     console.log(
       `${path.basename(downloadedFile)} is extracting, please wait...`
     );
-    fs.createReadStream(downloadedFile).pipe(
-      unzipper.Extract({ path: "./public/bin" })
-    );
+    const zip = new AdmZip(downloadedFile);
+    zip.extractAllTo("public/bin", true, true);
   } catch (e) {
     console.error(e);
     return;

@@ -48,6 +48,7 @@
     "@typescript-eslint/eslint-plugin": "^7.1.1",
     "@typescript-eslint/parser": "^7.1.1",
     "@vitejs/plugin-react": "^4.2.1",
+    "adm-zip": "^0.5.12",
     "electron": "^30.0.2",
     "electron-builder": "^24.13.3",
     "electron-builder-notarize": "^1.5.2",
@@ -57,7 +58,6 @@
     "minimist": "^1.2.8",
     "nodejs-file-downloader": "^4.12.1",
     "typescript": "^5.2.2",
-    "unzipper": "^0.11.5",
     "vite": "^5.1.6",
     "vite-plugin-electron": "^0.28.4",
     "vite-plugin-electron-renderer": "^0.14.5"
