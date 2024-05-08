@@ -3,9 +3,9 @@
  */
 {
   $schema: "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
-  appId: "xwarp",
+  appId: "xwarp-desktop",
   asar: false,
-  productName: "xwarp",
+  productName: "XWarp-Desktop",
   directories: {
     output: "build/v${version}",
   },
@@ -38,5 +38,6 @@
   linux: {
     target: ["AppImage"],
     artifactName: "${productName}-v${version}-linux-${arch}.${ext}",
+    icon: "public/logo.png",
   },
 }
