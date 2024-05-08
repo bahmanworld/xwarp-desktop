@@ -15,7 +15,7 @@ jobs:
     env:
       WARP_REPO: https://github.com/bahmanworld/xwarp-plus
       WARP_VERSION: v1.1.4
-      WARP_URL: "$WARPREPO/rlease/tags/$WARP_VERSION"
+      WARP_URL: "$WARP_REPO/releases/tag/$WARP_VERSION"
 
     strategy:
       fail-fast: false
