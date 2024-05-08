@@ -1,10 +1,10 @@
 {
-  "name": "xwarp",
+  "name": "xwarp-desktop",
   "private": true,
   "version": "1.0.0",
   "warp_plus_version": "v1.1.4",
   "warp_plus_repo": "https://github.com/bahmanworld/xwarp-plus",
-  "appId": "bahman.world.xwarp",
+  "appId": "bahman.world.xwarp-desktop",
   "main": "dist-electron/main.js",
   "author": {
     "email": "bahman.world@gmail.com",
