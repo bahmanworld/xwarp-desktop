@@ -12,12 +12,12 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && electron-builder",
-    "release:macos:arm64": "tsc && vite build && electron-builder --macos --arm64",
-    "release:macos:x64": "tsc && vite build && electron-builder --macos --x64",
-    "release:windows:arm64": "tsc && vite build && electron-builder --windows --arm64",
-    "release:windows:x64": "tsc && vite build && electron-builder --windows --x64",
-    "release:linux:arm64": "tsc && vite build && electron-builder --linux --arm64",
-    "release:linux:x64": "tsc && vite build && electron-builder --linux --x64",
+    "release:macos:arm64": "tsc && vite build && electron-builder --macos --arm64 --publish never",
+    "release:macos:x64": "tsc && vite build && electron-builder --macos --x64 --publish never",
+    "release:windows:arm64": "tsc && vite build && electron-builder --windows --arm64 --publish never",
+    "release:windows:x64": "tsc && vite build && electron-builder --windows --x64 --publish never",
+    "release:linux:arm64": "tsc && vite build && electron-builder --linux --arm64 --publish never",
+    "release:linux:x64": "tsc && vite build && electron-builder --linux --x64 --publish never",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "git": "git add . && git commit -m \"some changes\" && git push"
