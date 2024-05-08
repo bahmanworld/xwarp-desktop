@@ -247,7 +247,7 @@ const HomePanel = () => {
             <Button
               onClick={() => {
                 window.electron.openExternalLink(
-                  "https://github.com/bahmanworld/xwarp"
+                  "https://github.com/bahmanworld/xwarp-desktop"
                 );
               }}
             >
