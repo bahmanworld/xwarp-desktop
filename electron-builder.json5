@@ -17,7 +17,9 @@
     icon: "public/logo.icns",
     category: "public.app-category.developer-tools",
     type: "distribution",
-    entitlements: "public/entitlements.mac.plist"
+    entitlements: "public/entitlements.mac.plist",
+    gatekeeperAssess: true,
+    hardenedRuntime: true
   },
   win: {
     target: [
