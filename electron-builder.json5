@@ -15,10 +15,10 @@
     target: ["dmg"],
     artifactName: "${productName}-v${version}-macos-${arch}.${ext}",
     icon: "public/logo.icns",
-    category: "public.app-category.developer-tools",
-    type: "distribution",
-    hardenedRuntime: true,
-    "entitlements": "./node_modules/electron-builder-notarize/entitlements.mac.inherit.plist",
+    // category: "public.app-category.developer-tools",
+    // type: "distribution",
+    // hardenedRuntime: true,
+    // "entitlements": "./node_modules/electron-builder-notarize/entitlements.mac.inherit.plist",
   },
   win: {
     target: [

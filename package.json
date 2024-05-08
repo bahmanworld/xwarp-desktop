@@ -2,8 +2,8 @@
   "name": "xwarp",
   "private": true,
   "version": "1.0.0",
-  "warp_plus_repo": "https://github.com/bahmanworld/xwarp-plus",
   "warp_plus_version": "v1.1.4",
+  "warp_plus_repo": "https://github.com/bahmanworld/xwarp-plus",
   "appId": "bahman.world.xwarp",
   "main": "dist-electron/main.js",
   "author": {
@@ -11,15 +11,20 @@
     "name": "Bahman World",
     "url": "https://bahmanworld.com"
   },
+  "repository": {
+    "url": "https://github.com/bahmanworld/xwarp-desktop",
+    "directory": "./",
+    "type": "github"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && electron-builder",
-    "release:macos:arm64": "tsc && vite build && electron-builder --macos --arm64 --publish always",
-    "release:macos:x64": "tsc && vite build && electron-builder --macos --x64 --publish always",
-    "release:windows:arm64": "tsc && vite build && electron-builder --windows --arm64 --publish always",
-    "release:windows:x64": "tsc && vite build && electron-builder --windows --x64 --publish always",
-    "release:linux:arm64": "tsc && vite build && electron-builder --linux --arm64 --publish always",
-    "release:linux:x64": "tsc && vite build && electron-builder --linux --x64 --publish always",
+    "release:macos:arm64": "tsc && vite build && electron-builder --macos --arm64",
+    "release:macos:x64": "tsc && vite build && electron-builder --macos --x64",
+    "release:windows:arm64": "tsc && vite build && electron-builder --windows --arm64",
+    "release:windows:x64": "tsc && vite build && electron-builder --windows --x64",
+    "release:linux:arm64": "tsc && vite build && electron-builder --linux --arm64",
+    "release:linux:x64": "tsc && vite build && electron-builder --linux --x64",
     "publish": "node action.js",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
