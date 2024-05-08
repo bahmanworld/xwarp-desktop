@@ -61,9 +61,9 @@ jobs:
           npm install -g download-cli
           download ${{ env.WARP_URL }}/${{ matrix.warp_zip_file }} > warp-plus.zip
           npm install -g cross-zip-cli
-          cross-unzip ./warp-plus.zip ./warp-plus
+          cross-unzip ./warp-plus.zip ./
           npm install -g cpy-cli
-          cpy ./warp-plus/warp-plus ./public
+          cpy ./warp-plus ./public
 
       - name: Build MacOS-arm64 App
         if: (matrix.os == 'macos-latest') && (matrix.arch == 'arm64')
