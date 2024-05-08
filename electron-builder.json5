@@ -7,13 +7,18 @@
   asar: false,
   productName: "xwarp",
   directories: {
-    output: "build/v${version}"
+    output: "build/v${version}",
   },
   files: ["dist", "dist-electron"],
   mac: {
     target: ["dmg"],
     artifactName: "${productName}-v${version}-macos-${arch}.${ext}",
-    icon: "public/logo.icns"
+    icon: "public/logo.icns",
+    type: "distribution",
+    hardenedRuntime: true,
+    entitlements: "public/entitlements.mac.plist",
+    entitlementsInherit: "public/entitlements.mac.plist",
+    gatekeeperAssess: false,
   },
   win: {
     target: [
@@ -23,7 +28,7 @@
       },
     ],
     artifactName: "${productName}-v${version}-windows-${arch}.${ext}",
-    icon: "public/logo.ico"
+    icon: "public/logo.ico",
   },
   nsis: {
     oneClick: false,
@@ -33,6 +38,6 @@
   },
   linux: {
     target: ["AppImage"],
-    artifactName: "${productName}-v${version}-linux-${arch}.${ext}"
+    artifactName: "${productName}-v${version}-linux-${arch}.${ext}",
   },
 }
