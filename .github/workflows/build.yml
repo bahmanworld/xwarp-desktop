@@ -53,9 +53,8 @@ jobs:
       - name: Intstall Dependencies
         run: npm ci
 
-      - name: Download/Extract/Copy Warp-plus CLI
-        run: |
-          npm run publish -- --filename ${{ matrix.warp_zip_file }}
+      - name: Download and extract Warp-plus CLI
+        run: npm run publish -- --filename ${{ matrix.warp_zip_file }}
 
       - name: Build MacOS-arm64 App
         if: (matrix.os == 'macos-latest') && (matrix.arch == 'arm64')
