@@ -20,7 +20,7 @@
     "release:linux:x64": "tsc && vite build && electron-builder --linux --x64 --publish never",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "git": "git add . && git commit -m \"some changes\" && git push"
+    "git": "git add . && git commit -m \"some updates\" && git push"
   },
   "dependencies": {
     "@blueprintjs/core": "^5.10.1",
