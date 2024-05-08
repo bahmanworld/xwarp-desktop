@@ -122,5 +122,5 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           file: ./build/${{ github.ref_name }}/${{ matrix.file }}
-          tags: true
-          draft: true
+          tags: false
+          draft: false
