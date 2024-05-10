@@ -24,6 +24,7 @@ interface Window {
     quit: () => void;
     willQuit: (callback: () => void) => {};
     logs: (callback: (data: any) => void) => void;
+    copy: (value: any) => void,
     openExternalLink: (url: string) => void;
     download: (
       callback: (error: Error | null, finished: boolean) => void

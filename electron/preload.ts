@@ -68,6 +68,10 @@ contextBridge.exposeInMainWorld("electron", {
     });
   },
 
+  copy: (value: any) => {
+    ipcRenderer.send("clipboard:copy", value);
+  },
+
   openExternalLink: (url: string) => {
     ipcRenderer.send("link:open", url);
   },

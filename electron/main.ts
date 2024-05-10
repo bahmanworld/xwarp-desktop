@@ -1,6 +1,7 @@
 import {
   app,
   BrowserWindow,
+  clipboard,
   ipcMain,
   nativeImage,
   shell,
@@ -163,6 +164,10 @@ ipcMain.on("app:quit", () => {
 ipcMain.on("app:path", (e) => {
   const appPath = app.getPath("home");
   e.returnValue = appPath;
+});
+
+ipcMain.on("clipboard:copy", (e, value) => {
+  clipboard.writeText(value, "clipboard")
 });
 
 ipcMain.on("settings:set", (_, key, value) => {
