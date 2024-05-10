@@ -1,19 +1,12 @@
-const zlip = require("zlib");
-const fs = require("fs");
 const path = require("path");
 const process = require("process");
 const minimist = require("minimist")(process.argv);
 const Downloader = require("nodejs-file-downloader");
 const AdmZip = require("adm-zip");
 const json = require("./package.json");
-
-const args = {
-  filename: minimist.filename,
-};
-
 const repo = json.warp_plus_repo; // warp-plus repository
 const version = json.warp_plus_version; // warp-plus version
-const filename = args.filename; // warp-plus filename to download based on OS Arch
+const filename = minimist.filename; // warp-plus filename to download based on OS Arch
 const url = `${repo}/releases/download/${version}/${filename}`;
 
 const runAction = async () => {
