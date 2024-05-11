@@ -25,7 +25,7 @@
     "release:windows:x64": "tsc && vite build && electron-builder build --windows --x64",
     "release:linux:arm64": "tsc && vite build && electron-builder build --linux --arm64",
     "release:linux:x64": "tsc && vite build && electron-builder build --linux --x64",
-    "publish": "node .github/scripts/prepublish.js",
+    "publish": "node ./.github/scripts/publish.js",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "git": "git add . && git commit -m \"some changes\" && git push"
