@@ -43,6 +43,8 @@ type Fields = {
 };
 
 interface ISettings extends Fields {
+  stayOnTop: boolean,
+  updateStayOnTop: (stay: boolean) => void;
   updateField: (key: keyof Fields, value: typeof key | any) => void;
   getSettings: () => Fields;
   resetSettings: () => void;
@@ -55,6 +57,10 @@ export const useSettings = create<ISettings>()((set, get) => ({
   psiphon: window.electron.settings.get("psiphon") || false,
   country: window.electron.settings.get("country") || "US",
   gool: window.electron.settings.get("gool") || false,
+  stayOnTop: false,
+  updateStayOnTop: (stay) => {
+    set({ stayOnTop: stay });
+  },
   updateField: (key, value) => {
     set({ [key]: value });
     window.electron.settings.set(key, value);
@@ -70,7 +76,7 @@ export const useSettings = create<ISettings>()((set, get) => ({
       port: get().port,
       psiphon: get().psiphon,
       country: get().country,
-      gool: get().gool,
+      gool: get().gool
     };
   },
   resetSettings: () => {

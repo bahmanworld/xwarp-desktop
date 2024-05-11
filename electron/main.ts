@@ -76,12 +76,6 @@ app.on("activate", (e) => {
   }
 });
 
-app.on("before-quit", (e) => {
-  if (isConnected) {
-    e.preventDefault();
-    win?.webContents.send("app:will-quit");
-  }
-});
 
 app.whenReady().then(createWindow);
 
@@ -161,9 +155,15 @@ ipcMain.on("app:quit", () => {
   app.exit();
 });
 
-ipcMain.on("app:path", (e) => {
-  const appPath = app.getPath("home");
-  e.returnValue = appPath;
+app.on("before-quit", (e) => {
+  if (isConnected) {
+    e.preventDefault();
+    win?.webContents.send("app:will-quit");
+  }
+});
+
+ipcMain.on("app:stayontop", (e, stay: boolean) => {
+  win?.setAlwaysOnTop(stay)
 });
 
 ipcMain.on("clipboard:copy", (e, value) => {

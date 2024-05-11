@@ -62,6 +62,10 @@ contextBridge.exposeInMainWorld("electron", {
     ipcRenderer.on("app:will-quit", callback);
   },
 
+  stayOnTop: (stay: boolean) => {
+    ipcRenderer.send("app:stayontop", stay);
+  },
+
   logs: (callback: (data: any) => void) => {
     ipcRenderer.on("logs", (_, logs) => {
       callback(logs);

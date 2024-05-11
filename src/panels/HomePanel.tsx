@@ -1,6 +1,6 @@
 import { usePanelStack } from "../stores/useStack";
 import SettingsPanel from "./SettingsPanel";
-import { Github, Info, Settings, Terminal, X } from "lucide-react";
+import { Github, Info, Pin, PinOff, Settings, Terminal, X } from "lucide-react";
 import { Button, ButtonGroup, Tooltip } from "@blueprintjs/core";
 import AppLogo from "/logo.png";
 import ConnectionIcon from "/connection.png";
@@ -11,6 +11,7 @@ import LogsPanel from "./LogsPanel";
 import AboutPanel from "./AboutPanel";
 import React from "react";
 import axios from "axios";
+import { useSettings } from "../stores/useSettings";
 
 export const countryFlags = [
   { id: "AT", flag: "🇦🇹" },
@@ -49,6 +50,7 @@ export const countryFlags = [
 const HomePanel = () => {
   const stack = usePanelStack();
   const warp = useWarp();
+  const settings = useSettings();
 
   const [flag, setFlag] = React.useState("");
   React.useMemo(() => {
@@ -172,7 +174,6 @@ const HomePanel = () => {
               />
             )}
           </button>
-          
         </div>
 
         <div
@@ -190,34 +191,33 @@ const HomePanel = () => {
           {!warp.connected && !warp.connecting && "Disconnected"}
           {warp.connecting && "Connecting..."}
           {warp.connected && !warp.ifconfig && "Retrieving IP..."}
-          {warp.connected &&
-            warp.ifconfig && (
+          {warp.connected && warp.ifconfig && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+              }}
+            >
+              <div style={{ fontSize: 30 }}>{flag}</div>
               <div
                 style={{
                   display: "flex",
-                  alignItems: "center",
-                  gap: 10,
+                  alignItems: "start",
+                  justifyContent: "start",
+                  flexDirection: "column",
+                  gap: 1,
                 }}
               >
-                <div style={{ fontSize: 30 }}>{flag}</div>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "start",
-                    justifyContent: "start",
-                    flexDirection: "column",
-                    gap: 1,
-                  }}
-                >
-                  <div style={{ fontWeight: "bold" }}>
-                    {warp.ifconfig?.country}
-                  </div>
-                  <div style={{ fontSize: 10, opacity: 0.6 }}>
-                    {warp.ifconfig?.ip}
-                  </div>
+                <div style={{ fontWeight: "bold" }}>
+                  {warp.ifconfig?.country}
+                </div>
+                <div style={{ fontSize: 10, opacity: 0.6 }}>
+                  {warp.ifconfig?.ip}
                 </div>
               </div>
-            )}
+            </div>
+          )}
         </div>
 
         <ButtonGroup minimal style={{ marginBottom: 10 }}>
@@ -252,6 +252,31 @@ const HomePanel = () => {
               }}
             >
               <Github size={18} style={{ marginBottom: -4 }} />
+            </Button>
+          </Tooltip>
+          <Tooltip
+            compact
+            content={
+              settings.stayOnTop ? "Disable Stay on Top" : "Enable Stay on Top"
+            }
+          >
+            <Button
+              onClick={() => {
+                if (settings.stayOnTop) {
+                  settings.updateStayOnTop(false);
+                  window.electron.stayOnTop(false);
+                } else {
+                  settings.updateStayOnTop(true);
+                  window.electron.stayOnTop(true);
+                }
+              }}
+            >
+              {settings.stayOnTop && (
+                <PinOff size={18} style={{ marginBottom: -4 }} />
+              )}
+              {!settings.stayOnTop && (
+                <Pin size={18} style={{ marginBottom: -4 }} />
+              )}
             </Button>
           </Tooltip>
           <Tooltip compact content={"Settings"}>
