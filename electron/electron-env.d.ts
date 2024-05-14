@@ -26,6 +26,7 @@ interface Window {
     stayOnTop: (stay: boolean) => {},
     logs: (callback: (data: any) => {}) => {};
     copy: (value: any) => {},
+    platform: () => {},
     openExternalLink: (url: string) => {};
     download: (
       callback: (error: Error | null, finished: boolean) => {}

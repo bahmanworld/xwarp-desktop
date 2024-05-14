@@ -45,6 +45,8 @@ function createWindow() {
     },
   });
 
+  win?.setMenu(null)
+
   win.webContents.on("did-finish-load", () => {
     win?.webContents.send("main-process-message", new Date().toLocaleString());
   });
@@ -164,6 +166,10 @@ app.on("before-quit", (e) => {
 
 ipcMain.on("app:stayontop", (e, stay: boolean) => {
   win?.setAlwaysOnTop(stay)
+});
+
+ipcMain.on("app:platform", (e, key) => {
+  e.returnValue = process.platform;
 });
 
 ipcMain.on("clipboard:copy", (e, value) => {
