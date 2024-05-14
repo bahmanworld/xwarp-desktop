@@ -30,7 +30,7 @@ function AboutPanel() {
         height: "100vh",
         display: "flex",
         padding: 10,
-        paddingTop: 45,
+        paddingTop: window.electron.platform() == "darwin" ? 45 : 15,
         flexDirection: "column",
         justifyItems: "center",
         alignItems: "center",
