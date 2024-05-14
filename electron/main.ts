@@ -109,7 +109,7 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
 
   const commander = path.join(process.env.VITE_PUBLIC, "bin", "warp-plus");
   console.log(commander);
-  child = spawn(commander, args, { shell: true });
+  child = spawn(commander, args, { shell: true, windowsHide: true });
   child.stdout.setEncoding("utf8");
   child.stdout.on("data", (data) => {
     console.log(data);
@@ -119,6 +119,9 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
     );
     if (connected) {
       if (process.platform == "win32") {
+        execSync(
+          `reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /v ProxyEnable /t REG_DWORD /d 1`
+        ); // windows
         execSync(
           `reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /v ProxyServer /t REG_SZ /d 127.0.0.1:${
             settings.port || 8086
