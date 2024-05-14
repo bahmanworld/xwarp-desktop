@@ -10,7 +10,7 @@
     output: "build/v${version}",
   },
   files: ["dist", "dist-electron"],
-  afterSign: 'electron-builder-notarize',
+  afterSign: "electron-builder-notarize",
   mac: {
     target: ["dmg"],
     artifactName: "${productName}-v${version}-macos-${arch}.${ext}",
@@ -19,7 +19,7 @@
     type: "distribution",
     entitlements: "public/entitlements.mac.plist",
     gatekeeperAssess: true,
-    hardenedRuntime: true
+    hardenedRuntime: true,
   },
   win: {
     target: [
@@ -29,7 +29,7 @@
       },
     ],
     artifactName: "${productName}-v${version}-windows-${arch}.${ext}",
-    icon: "public/logo.ico",
+    icon: "public/logo.ico"
   },
   nsis: {
     oneClick: false,

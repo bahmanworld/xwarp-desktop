@@ -34,6 +34,8 @@
     "@blueprintjs/core": "^5.10.1",
     "axios": "^1.6.8",
     "electron-store": "^8.2.0",
+    "extract-colors": "^4.0.6",
+    "get-pixels": "^3.3.3",
     "lucide-react": "^0.370.0",
     "node-fetch": "^3.3.2",
     "react": "^18.2.0",
