@@ -59,6 +59,10 @@ const HomePanel = () => {
     );
   }, [warp.ifconfig]);
 
+  React.useEffect(()=>{
+    alert(window.electron.platform())
+  }, [])
+
   return (
     <div
       style={{

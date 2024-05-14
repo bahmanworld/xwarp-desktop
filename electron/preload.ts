@@ -76,6 +76,10 @@ contextBridge.exposeInMainWorld("electron", {
     ipcRenderer.send("clipboard:copy", value);
   },
 
+  platform: ()=>{
+    return ipcRenderer.sendSync("app:platform");
+  },
+
   openExternalLink: (url: string) => {
     ipcRenderer.send("link:open", url);
   },
