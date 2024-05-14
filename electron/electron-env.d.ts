@@ -11,25 +11,25 @@ declare namespace NodeJS {
 interface Window {
   electron: {
     settings: {
-      set: (key: string, value: unknown) => {};
+      set: (key: string, value: unknown) => void;
       get: (key: string) => any;
-      delete: (key: string) => {};
-      clear: () => {};
+      delete: (key: string) => void;
+      clear: () => void;
     };
     connect: (
       settings: any,
-      callback: (e: Electron.IpcRendererEvent, ...args: any[]) => {}
+      callback: (e: Electron.IpcRendererEvent, ...args: any[]) => void
     ) => {};
-    disconnect: () => {};
-    quit: () => {};
-    willQuit: (callback: () => {}) => {};
-    stayOnTop: (stay: boolean) => {},
-    logs: (callback: (data: any) => {}) => {};
+    disconnect: () => void;
+    quit: () => void;
+    willQuit: (callback: () => void) => void;
+    stayOnTop: (stay: boolean) => void,
+    logs: (callback: (data: any) => void) => void;
     copy: (value: any) => {},
     platform: () => {},
     openExternalLink: (url: string) => {};
     download: (
-      callback: (error: Error | null, finished: boolean) => {}
-    ) => {};
+      callback: (error: Error | null, finished: boolean) => void
+    ) => void;
   };
 }

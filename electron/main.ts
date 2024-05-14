@@ -20,6 +20,7 @@ process.env.VITE_PUBLIC = app.isPackaged
 const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
 
 let win: BrowserWindow | null;
+const cacheDir = path.join(app.getPath("home"), ".xwarp-cache");
 let child: ChildProcessWithoutNullStreams | null = null;
 let isConnected = false;
 
@@ -96,8 +97,6 @@ type SettingsArgs = {
 
 ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
   console.log("connecting...");
-  const cacheDir = path.join(app.getPath("home"), ".xwarp-cache");
-  // if (fs.existsSync(cacheDir)) fs.rmSync(cacheDir, {force: true, recursive: true})
   const args = [];
   args.push(`--cache-dir ${cacheDir}`);
   settings.endpoint && args.push(`-e ${settings.endpoint}`);
@@ -153,6 +152,7 @@ ipcMain.on("app:quit", () => {
   } else if (process.platform == "darwin") {
     execSync("networksetup -setsocksfirewallproxystate Wi-Fi off"); // macos
   }
+  if (fs.existsSync(cacheDir)) fs.rmSync(cacheDir, {force: true, recursive: true})
   child?.kill();
   app.exit();
 });
@@ -161,6 +161,7 @@ app.on("before-quit", (e) => {
   if (isConnected) {
     e.preventDefault();
     win?.webContents.send("app:will-quit");
+    if (fs.existsSync(cacheDir)) fs.rmSync(cacheDir, {force: true, recursive: true})
   }
 });
 

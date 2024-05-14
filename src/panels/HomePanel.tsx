@@ -194,7 +194,7 @@ const HomePanel = () => {
         >
           {!warp.connected && !warp.connecting && "Disconnected"}
           {warp.connecting && "Connecting..."}
-          {warp.connected && !warp.ifconfig && "Retrieving IP..."}
+          {warp.connected && !warp.ifconfig && "Collecting IP Info..."}
           {warp.connected && warp.ifconfig && (
             <div
               style={{
