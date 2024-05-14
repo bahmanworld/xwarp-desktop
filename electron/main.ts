@@ -46,7 +46,9 @@ function createWindow() {
     },
   });
 
-  win?.setMenu(null)
+  if (process.platform == "win32") {
+    win?.setMenu(null);
+  }
 
   win.webContents.on("did-finish-load", () => {
     win?.webContents.send("main-process-message", new Date().toLocaleString());
@@ -78,7 +80,6 @@ app.on("activate", (e) => {
     createWindow();
   }
 });
-
 
 app.whenReady().then(createWindow);
 
@@ -152,7 +153,8 @@ ipcMain.on("app:quit", () => {
   } else if (process.platform == "darwin") {
     execSync("networksetup -setsocksfirewallproxystate Wi-Fi off"); // macos
   }
-  if (fs.existsSync(cacheDir)) fs.rmSync(cacheDir, {force: true, recursive: true})
+  if (fs.existsSync(cacheDir))
+    fs.rmSync(cacheDir, { force: true, recursive: true });
   child?.kill();
   app.exit();
 });
@@ -161,12 +163,13 @@ app.on("before-quit", (e) => {
   if (isConnected) {
     e.preventDefault();
     win?.webContents.send("app:will-quit");
-    if (fs.existsSync(cacheDir)) fs.rmSync(cacheDir, {force: true, recursive: true})
+    if (fs.existsSync(cacheDir))
+      fs.rmSync(cacheDir, { force: true, recursive: true });
   }
 });
 
 ipcMain.on("app:stayontop", (e, stay: boolean) => {
-  win?.setAlwaysOnTop(stay)
+  win?.setAlwaysOnTop(stay);
 });
 
 ipcMain.on("app:platform", (e, key) => {
@@ -174,7 +177,7 @@ ipcMain.on("app:platform", (e, key) => {
 });
 
 ipcMain.on("clipboard:copy", (e, value) => {
-  clipboard.writeText(value, "clipboard")
+  clipboard.writeText(value, "clipboard");
 });
 
 ipcMain.on("settings:set", (_, key, value) => {
