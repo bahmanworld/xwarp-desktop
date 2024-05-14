@@ -109,7 +109,7 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
 
   const commander = path.join(process.env.VITE_PUBLIC, "bin", "warp-plus");
   console.log(commander);
-  child = spawn(commander, args, { shell: true});
+  child = spawn(commander, args, { shell: true });
   child.stdout.setEncoding("utf8");
   child.stdout.on("data", (data) => {
     console.log(data);
@@ -120,10 +120,10 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
     if (connected) {
       if (process.platform == "win32") {
         execSync(
-          `reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v ProxyEnable /t REG_DWORD /d 1`
+          `reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /v ProxyEnable /t REG_DWORD /d 1`
         ); // windows
         execSync(
-          `reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v ProxyServer /t REG_SZ /d 127.0.0.1:${
+          `reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /v ProxyServer /t REG_SZ /d 127.0.0.1:${
             settings.port || 8086
           }`
         ); // windows
@@ -148,7 +148,7 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
 ipcMain.on("warp:disconnect", () => {
   if (process.platform == "win32") {
     execSync(
-      `reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v ProxyEnable /t REG_DWORD /d 0`
+      `reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /v ProxyEnable /t REG_DWORD /d 0`
     ); // windows
   } else if (process.platform == "darwin") {
     execSync("networksetup -setsocksfirewallproxystate Wi-Fi off"); // macos
@@ -160,7 +160,7 @@ ipcMain.on("warp:disconnect", () => {
 ipcMain.on("app:quit", () => {
   if (process.platform == "win32") {
     execSync(
-      `reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v ProxyEnable /t REG_DWORD /d 0`
+      `reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /v ProxyEnable /t REG_DWORD /d 0`
     ); // windows
   } else if (process.platform == "darwin") {
     execSync("networksetup -setsocksfirewallproxystate Wi-Fi off"); // macos
