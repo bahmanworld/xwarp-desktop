@@ -59,7 +59,7 @@ const HomePanel = () => {
     );
   }, [warp.ifconfig]);
 
-  React.useEffect(()=>{
+  React.useEffect(() => {
     alert(window.electron.platform())
   }, [])
 
@@ -79,7 +79,7 @@ const HomePanel = () => {
           height: "100vh",
           display: "flex",
           padding: 10,
-          paddingTop: 35,
+          paddingTop: window.electron.platform() == "macos" ? 35 : 15,
           flexDirection: "column",
           justifyItems: "center",
           alignItems: "center",
@@ -132,9 +132,8 @@ const HomePanel = () => {
           }}
         >
           <button
-            className={`big-button ${
-              warp.connecting ? "connecting" : warp.connected ? "connected" : ""
-            }`}
+            className={`big-button ${warp.connecting ? "connecting" : warp.connected ? "connected" : ""
+              }`}
             onClick={() => {
               if (warp.connected) {
                 warp.disconnect();
