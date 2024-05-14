@@ -75,7 +75,7 @@ const HomePanel = () => {
           height: "100vh",
           display: "flex",
           padding: 10,
-          paddingTop: window.electron.platform() == "macos" ? 35 : 15,
+          paddingTop: window.electron.platform() == "darwin" ? 35 : 15,
           flexDirection: "column",
           justifyItems: "center",
           alignItems: "center",

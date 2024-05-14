@@ -48,6 +48,7 @@ function createWindow() {
 
   if (process.platform == "win32") {
     win?.setMenu(null);
+    new Tray(nativeImage.createFromPath(path.join(process.env.VITE_PUBLIC, "tray.png")))
   }
 
   win.webContents.on("did-finish-load", () => {
@@ -118,7 +119,11 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
     );
     if (connected) {
       if (process.platform == "win32") {
-        execSync(`netsh winhttp set proxy 127.0.0.1:${settings.port || 8086}`); // windows
+        execSync(
+          `reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /v ProxyServer /t REG_SZ /d 127.0.0.1:${
+            settings.port || 8086
+          }`
+        ); // windows
       } else if (process.platform == "darwin") {
         execSync("networksetup -setsocksfirewallproxystate Wi-Fi on"); // macos
         execSync(
@@ -139,7 +144,9 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
 
 ipcMain.on("warp:disconnect", () => {
   if (process.platform == "win32") {
-    execSync(`netsh winhttp reset proxy`); // windows
+    execSync(
+      `reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /v ProxyEnable /t REG_DWORD /d 0`
+    ); // windows
   } else if (process.platform == "darwin") {
     execSync("networksetup -setsocksfirewallproxystate Wi-Fi off"); // macos
   }
@@ -149,7 +156,9 @@ ipcMain.on("warp:disconnect", () => {
 
 ipcMain.on("app:quit", () => {
   if (process.platform == "win32") {
-    execSync(`netsh winhttp reset proxy`); // windows
+    execSync(
+      `reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /v ProxyEnable /t REG_DWORD /d 0`
+    ); // windows
   } else if (process.platform == "darwin") {
     execSync("networksetup -setsocksfirewallproxystate Wi-Fi off"); // macos
   }
