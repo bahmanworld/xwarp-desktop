@@ -60,6 +60,8 @@ function createWindow() {
 
   win.webContents.on("did-finish-load", () => {
     win?.webContents.send("main-process-message", new Date().toLocaleString());
+    console.log("pid:", process.pid)
+    console.log("ppid:", process.ppid)
   });
 
   win?.on("close", (e) => {
@@ -123,9 +125,7 @@ const enableOSProxy = (port: number = 8086) => {
       ); // windows
       proxySpawn1.stdout.setEncoding("utf8");
       proxySpawn1.stdout.on("data", (data: string) => {
-        if (data.includes("Value ProxyEnable exists, overwrite(Yes/No)?")) {
-          proxySpawn1?.stdin.write("Yes");
-        }
+        proxySpawn1?.stdin.write("Yes");
       });
       proxySpawn2 = spawn(
         "reg",
@@ -139,9 +139,7 @@ const enableOSProxy = (port: number = 8086) => {
       ); // windows
       proxySpawn2.stdout.setEncoding("utf8");
       proxySpawn2.stdout.on("data", (data: string) => {
-        if (data.includes("Value ProxyEnable exists, overwrite(Yes/No)?")) {
-          proxySpawn2?.stdin.write("Yes");
-        }
+        proxySpawn2?.stdin.write("Yes");
       });
       break;
     case "darwin":
@@ -172,9 +170,7 @@ const disableOSProxy = () => {
       ); // windows
       proxySpawn3.stdout.setEncoding("utf8");
       proxySpawn3.stdout.on("data", (data: string) => {
-        if (data.includes("Value ProxyEnable exists, overwrite(Yes/No)?")) {
-          proxySpawn3?.stdin.write("Yes");
-        }
+        proxySpawn3?.stdin.write("Yes");
       });
       break;
     case "darwin":
@@ -195,9 +191,10 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
   settings.gool && args.push(`--gool`);
   settings.psiphon && args.push(`--cfon --country ${settings.country}`);
 
-  const commander = path.join(process.env.VITE_PUBLIC, "bin", "warp-plus");
+  const commander = path.join(process.env.VITE_PUBLIC, "bin", `warp-plus${process.platform === 'win32' ? '.exe' : ''}`);
   console.log(commander);
   child = spawn(commander, args, { shell: true });
+  console.log("child_pid:", child.pid)
   child.stdout.setEncoding("utf8");
   child.stdout.on("data", (data) => {
     console.log(data);
@@ -211,28 +208,17 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
       isConnected = true;
     }
   });
-
-  child.on("error", (e) => {
-    console.log('error')
-    child?.kill();
-  });
-
-  child.stderr.on("data", () => {
-    console.log('error')
-    child?.kill();
-  });
 });
 
 ipcMain.on("warp:disconnect", () => {
   disableOSProxy();
-  child?.kill();
-  dialog.showErrorBox("ProcessID", child?.pid + "")
+  child?.kill("SIGINT");
   isConnected = false;
 });
 
 ipcMain.on("app:quit", () => {
   disableOSProxy();
-  child?.kill();
+  child?.kill("SIGINT");
   app.exit();
 });
 
@@ -259,7 +245,6 @@ ipcMain.on("clipboard:copy", (e, value) => {
 
 ipcMain.on("settings:set", (_, key, value) => {
   Storage.instance.set(key, value);
-  // child?.kill();
 });
 
 ipcMain.on("settings:get", (e, key) => {
