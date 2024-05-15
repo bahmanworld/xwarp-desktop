@@ -114,7 +114,7 @@ const enableOSProxy = (port: number = 8086) => {
           "/t REG_DWORD",
           "/d 1",
         ],
-        { shell: false }
+        { shell: true }
       ); // windows
       spawnSync(
         "reg add",
@@ -124,7 +124,7 @@ const enableOSProxy = (port: number = 8086) => {
           "/t REG_SZ",
           `/d 127.0.0.1:${port}`,
         ],
-        { shell: false }
+        { shell: true }
       ); // windows
       break;
     case "darwin":
@@ -153,7 +153,7 @@ const disableOSProxy = () => {
           "/t REG_DWORD",
           "/d 0",
         ],
-        { shell: false }
+        { shell: true }
       ); // windows
       break;
     case "darwin":
@@ -197,10 +197,12 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
 
   child.on("error", (e) => {
     child?.kill();
+    process.kill(child?.pid as number)
   });
 
   child.stderr.on("data", () => {
     child?.kill();
+    process.kill(child?.pid as number)
     console.log("error");
   });
 });
@@ -208,12 +210,14 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
 ipcMain.on("warp:disconnect", () => {
   disableOSProxy();
   child?.kill();
+  process.kill(child?.pid as number)
   isConnected = false;
 });
 
 ipcMain.on("app:quit", () => {
   disableOSProxy();
   child?.kill();
+  process.kill(child?.pid as number)
   app.exit();
 });
 
