@@ -119,6 +119,7 @@ const enableOSProxy = (port: number = 8086) => {
         ],
         { shell: true }
       ); // windows
+      proxyEnbaleSpawn.stdout.setEncoding("utf-8")
       proxyEnbaleSpawn.stdout.on('data', console.log)
       proxyInformSpawn = spawn(
         "reg",
@@ -130,6 +131,7 @@ const enableOSProxy = (port: number = 8086) => {
         ],
         { shell: true }
       ); // windows
+      proxyInformSpawn.stdout.setEncoding("utf-8")
       proxyInformSpawn.stdout.on('data', console.log)
       break;
     case "darwin":
@@ -184,7 +186,7 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
   const commander = path.join(process.env.VITE_PUBLIC, "bin", "warp-plus");
   console.log(commander);
   child = spawn(commander, args, { shell: true });
-  child.stdout.setEncoding("utf8");
+  child.stdout.setEncoding("utf-8");
   child.stdout.on("data", (data) => {
     console.log(data);
     win?.webContents.send("logs", (data as string).trimEnd());
