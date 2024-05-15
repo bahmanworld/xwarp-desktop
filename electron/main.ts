@@ -8,7 +8,11 @@ import {
   Tray,
 } from "electron";
 import path from "node:path";
-import { spawn, execSync, ChildProcessWithoutNullStreams } from "child_process";
+import {
+  spawn,
+  spawnSync,
+  ChildProcessWithoutNullStreams,
+} from "child_process";
 import { Storage } from "./Storage";
 import { download } from "./utils";
 import fs from "fs";
@@ -48,7 +52,9 @@ function createWindow() {
 
   if (process.platform == "win32") {
     win?.setMenu(null);
-    new Tray(nativeImage.createFromPath(path.join(process.env.VITE_PUBLIC, "tray.png")))
+    new Tray(
+      nativeImage.createFromPath(path.join(process.env.VITE_PUBLIC, "tray.png"))
+    );
   }
 
   win.webContents.on("did-finish-load", () => {
@@ -97,6 +103,74 @@ type SettingsArgs = {
   gool: boolean;
 };
 
+const enableOSProxy = (port: number = 8086) => {
+  switch (process.platform) {
+    case "win32":
+      spawnSync(
+        `reg`,
+        [
+          "add",
+          "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings",
+          "/v ProxyEnable",
+          "/t REG_DWORD",
+          "/d 1",
+        ],
+        { shell: true }
+      ); // windows
+      spawnSync(
+        "reg",
+        [
+          "add",
+          "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings",
+          "/v ProxyServer",
+          "/t REG_SZ",
+          `/d 127.0.0.1:${port}`,
+        ],
+        { shell: true }
+      ); // windows
+      break;
+    case "darwin":
+      spawnSync(
+        "networksetup",
+        ["-setsocksfirewallproxystate", "Wi-Fi", "on"],
+        { shell: true }
+      ); // macos
+      spawnSync(
+        `networksetup`,
+        ["-setsocksfirewallproxy", "Wi-Fi", `127.0.0.1 ${port}`],
+        { shell: true }
+      ); // macos
+      break;
+  }
+};
+
+const disableOSProxy = () => {
+  switch (process.platform) {
+    case "win32":
+      spawnSync(
+        `reg`,
+        [
+          "add",
+          "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings",
+          "/v ProxyEnable",
+          "/t REG_DWORD",
+          "/d 0",
+        ],
+        { shell: true }
+      ); // windows
+      break;
+    case "darwin":
+      spawnSync(
+        "networksetup",
+        ["-setsocksfirewallproxystate", "Wi-Fi", "off"],
+        {
+          shell: true,
+        }
+      ); // macos
+      break;
+  }
+};
+
 ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
   console.log("connecting...");
   const args = [];
@@ -118,23 +192,7 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
       `address=127.0.0.1:${settings.port || 8086}`
     );
     if (connected) {
-      if (process.platform == "win32") {
-        execSync(
-          `reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /v ProxyEnable /t REG_DWORD /d 1`
-        ); // windows
-        execSync(
-          `reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /v ProxyServer /t REG_SZ /d 127.0.0.1:${
-            settings.port || 8086
-          }`
-        ); // windows
-      } else if (process.platform == "darwin") {
-        execSync("networksetup -setsocksfirewallproxystate Wi-Fi on"); // macos
-        execSync(
-          `networksetup -setsocksfirewallproxy Wi-Fi 127.0.0.1 ${
-            settings.port || 8086
-          }`
-        ); // macos
-      }
+      enableOSProxy(settings.port || 8086);
       win?.webContents.send("warp:connected", true);
       isConnected = true;
     }
@@ -143,30 +201,21 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
   child.on("error", (e) => {
     child?.kill();
   });
+
+  child.stderr.on("data", () => {
+    child?.kill();
+    console.log("error");
+  });
 });
 
 ipcMain.on("warp:disconnect", () => {
-  if (process.platform == "win32") {
-    execSync(
-      `reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /v ProxyEnable /t REG_DWORD /d 0`
-    ); // windows
-  } else if (process.platform == "darwin") {
-    execSync("networksetup -setsocksfirewallproxystate Wi-Fi off"); // macos
-  }
+  disableOSProxy();
   child?.kill();
   isConnected = false;
 });
 
 ipcMain.on("app:quit", () => {
-  if (process.platform == "win32") {
-    execSync(
-      `reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /v ProxyEnable /t REG_DWORD /d 0`
-    ); // windows
-  } else if (process.platform == "darwin") {
-    execSync("networksetup -setsocksfirewallproxystate Wi-Fi off"); // macos
-  }
-  if (fs.existsSync(cacheDir))
-    fs.rmSync(cacheDir, { force: true, recursive: true });
+  disableOSProxy();
   child?.kill();
   app.exit();
 });
