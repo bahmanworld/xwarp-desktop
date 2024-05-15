@@ -213,27 +213,22 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
 
   child.on("error", (e) => {
     child?.kill();
-    child?.disconnect()
   });
 
   child.stderr.on("data", () => {
     child?.kill();
-    child?.disconnect()
-    console.log("error");
   });
 });
 
 ipcMain.on("warp:disconnect", () => {
   disableOSProxy();
   child?.kill();
-  child?.disconnect()
   isConnected = false;
 });
 
 ipcMain.on("app:quit", () => {
   disableOSProxy();
   child?.kill();
-  child?.disconnect()
   app.exit();
 });
 
