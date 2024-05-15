@@ -197,12 +197,10 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
 
   child.on("error", (e) => {
     child?.kill();
-    process.kill(child?.pid as number);
   });
 
   child.stderr.on("data", () => {
     child?.kill();
-    process.kill(child?.pid as number);
     console.log("error");
   });
 });
@@ -210,14 +208,12 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
 ipcMain.on("warp:disconnect", () => {
   disableOSProxy();
   child?.kill();
-  process.kill(child?.pid as number);
   isConnected = false;
 });
 
 ipcMain.on("app:quit", () => {
   disableOSProxy();
   child?.kill();
-  process.kill(child?.pid as number);
   app.exit();
 });
 
