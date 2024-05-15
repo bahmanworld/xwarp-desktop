@@ -6,6 +6,7 @@ import {
   nativeImage,
   shell,
   Tray,
+  dialog
 } from "electron";
 import path from "node:path";
 import {
@@ -224,8 +225,8 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
 
 ipcMain.on("warp:disconnect", () => {
   disableOSProxy();
-  process.kill(child?.pid || 0)
-  // child?.kill();
+  child?.kill();
+  dialog.showErrorBox("ProcessID", child?.pid + "")
   isConnected = false;
 });
 
