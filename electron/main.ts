@@ -103,12 +103,14 @@ type SettingsArgs = {
   gool: boolean;
 };
 
-let proxySpawn: ChildProcessWithoutNullStreams | null = null;
+let proxySpawn1: ChildProcessWithoutNullStreams | null = null;
+let proxySpawn2: ChildProcessWithoutNullStreams | null = null;
+let proxySpawn3: ChildProcessWithoutNullStreams | null = null;
 
 const enableOSProxy = (port: number = 8086) => {
   switch (process.platform) {
     case "win32":
-      proxySpawn = spawn(
+      proxySpawn1 = spawn(
         `reg`,
         [
           'add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings"',
@@ -118,13 +120,13 @@ const enableOSProxy = (port: number = 8086) => {
         ],
         { shell: true }
       ); // windows
-      proxySpawn.stdout.setEncoding("utf8");
-      proxySpawn.stdout.on("data", (data: string) => {
+      proxySpawn1.stdout.setEncoding("utf8");
+      proxySpawn1.stdout.on("data", (data: string) => {
         if (data.includes("Value ProxyEnable exists, overwrite(Yes/No)?")) {
-          proxySpawn?.stdin.write("Yes");
+          proxySpawn1?.stdin.write("Yes");
         }
       });
-      proxySpawn = spawn(
+      proxySpawn2 = spawn(
         "reg",
         [
           'add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings"',
@@ -134,10 +136,10 @@ const enableOSProxy = (port: number = 8086) => {
         ],
         { shell: true }
       ); // windows
-      proxySpawn.stdout.setEncoding("utf8");
-      proxySpawn.stdout.on("data", (data: string) => {
+      proxySpawn2.stdout.setEncoding("utf8");
+      proxySpawn2.stdout.on("data", (data: string) => {
         if (data.includes("Value ProxyEnable exists, overwrite(Yes/No)?")) {
-          proxySpawn?.stdin.write("Yes");
+          proxySpawn2?.stdin.write("Yes");
         }
       });
       break;
@@ -157,7 +159,7 @@ const enableOSProxy = (port: number = 8086) => {
 const disableOSProxy = () => {
   switch (process.platform) {
     case "win32":
-      proxySpawn = spawn(
+      proxySpawn3 = spawn(
         `reg`,
         [
           'add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings"',
@@ -167,10 +169,10 @@ const disableOSProxy = () => {
         ],
         { shell: true }
       ); // windows
-      proxySpawn.stdout.setEncoding("utf8");
-      proxySpawn.stdout.on("data", (data: string) => {
+      proxySpawn3.stdout.setEncoding("utf8");
+      proxySpawn3.stdout.on("data", (data: string) => {
         if (data.includes("Value ProxyEnable exists, overwrite(Yes/No)?")) {
-          proxySpawn?.stdin.write("Yes");
+          proxySpawn3?.stdin.write("Yes");
         }
       });
       break;
@@ -211,10 +213,12 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
 
   child.on("error", (e) => {
     child?.kill();
+    child?.disconnect()
   });
 
   child.stderr.on("data", () => {
     child?.kill();
+    child?.disconnect()
     console.log("error");
   });
 });
@@ -222,12 +226,14 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
 ipcMain.on("warp:disconnect", () => {
   disableOSProxy();
   child?.kill();
+  child?.disconnect()
   isConnected = false;
 });
 
 ipcMain.on("app:quit", () => {
   disableOSProxy();
   child?.kill();
+  child?.disconnect()
   app.exit();
 });
 
