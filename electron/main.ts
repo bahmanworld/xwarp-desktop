@@ -114,7 +114,7 @@ const enableOSProxy = (port: number = 8086) => {
           "/t REG_DWORD",
           "/d 1",
         ],
-        { shell: true }
+        { shell: false }
       ); // windows
       spawnSync(
         "reg add",
@@ -124,7 +124,7 @@ const enableOSProxy = (port: number = 8086) => {
           "/t REG_SZ",
           `/d 127.0.0.1:${port}`,
         ],
-        { shell: true }
+        { shell: false }
       ); // windows
       break;
     case "darwin":
@@ -153,7 +153,7 @@ const disableOSProxy = () => {
           "/t REG_DWORD",
           "/d 0",
         ],
-        { shell: true }
+        { shell: false }
       ); // windows
       break;
     case "darwin":
