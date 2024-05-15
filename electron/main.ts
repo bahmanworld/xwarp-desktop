@@ -106,7 +106,7 @@ type SettingsArgs = {
 const enableOSProxy = (port: number = 8086) => {
   switch (process.platform) {
     case "win32":
-      spawnSync(
+      spawn(
         `reg`,
         [
           'add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings"',
@@ -116,7 +116,7 @@ const enableOSProxy = (port: number = 8086) => {
         ],
         { shell: true }
       ); // windows
-      spawnSync(
+      spawn(
         "reg",
         [
           'add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings"',
@@ -128,12 +128,12 @@ const enableOSProxy = (port: number = 8086) => {
       ); // windows
       break;
     case "darwin":
-      spawnSync(
+      spawn(
         "networksetup",
         ["-setsocksfirewallproxystate", "Wi-Fi", "on"],
         { shell: true }
       ); // macos
-      spawnSync(
+      spawn(
         `networksetup`,
         ["-setsocksfirewallproxy", "Wi-Fi", `127.0.0.1 ${port}`],
         { shell: true }
@@ -145,7 +145,7 @@ const enableOSProxy = (port: number = 8086) => {
 const disableOSProxy = () => {
   switch (process.platform) {
     case "win32":
-      spawnSync(
+      spawn(
         `reg`,
         [
           'add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings"',
@@ -157,7 +157,7 @@ const disableOSProxy = () => {
       ); // windows
       break;
     case "darwin":
-      spawnSync(
+      spawn(
         "networksetup",
         ["-setsocksfirewallproxystate", "Wi-Fi", "off"],
         {
