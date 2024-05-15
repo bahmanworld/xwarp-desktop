@@ -109,7 +109,7 @@ const enableOSProxy = (port: number = 8086) => {
       spawnSync(
         `reg add`,
         [
-          '"HKCUSoftwareMicrosoftWindowsCurrentVersionInternet Settings"',
+          '"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings"',
           "/v ProxyEnable",
           "/t REG_DWORD",
           "/d 1",
@@ -119,7 +119,7 @@ const enableOSProxy = (port: number = 8086) => {
       spawnSync(
         "reg add",
         [
-          '"HKCUSoftwareMicrosoftWindowsCurrentVersionInternet Settings"',
+          '"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings"',
           "/v ProxyServer",
           "/t REG_SZ",
           `/d 127.0.0.1:${port}`,
@@ -148,7 +148,7 @@ const disableOSProxy = () => {
       spawnSync(
         `reg add`,
         [
-          '"HKCUSoftwareMicrosoftWindowsCurrentVersionInternet Settings"',
+          '"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings"',
           "/v ProxyEnable",
           "/t REG_DWORD",
           "/d 0",
