@@ -103,10 +103,13 @@ type SettingsArgs = {
   gool: boolean;
 };
 
+let proxyEnbaleSpawn: ChildProcessWithoutNullStreams | null = null;
+let proxyInformSpawn: ChildProcessWithoutNullStreams | null = null;
+
 const enableOSProxy = (port: number = 8086) => {
   switch (process.platform) {
     case "win32":
-      spawn(
+      proxyEnbaleSpawn = spawn(
         `reg`,
         [
           'add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings"',
@@ -116,7 +119,8 @@ const enableOSProxy = (port: number = 8086) => {
         ],
         { shell: true }
       ); // windows
-      spawn(
+      proxyEnbaleSpawn.stdout.on('data', console.log)
+      proxyInformSpawn = spawn(
         "reg",
         [
           'add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings"',
@@ -126,12 +130,15 @@ const enableOSProxy = (port: number = 8086) => {
         ],
         { shell: true }
       ); // windows
+      proxyInformSpawn.stdout.on('data', console.log)
       break;
     case "darwin":
       spawn(
         "networksetup",
         ["-setsocksfirewallproxystate", "Wi-Fi", "on"],
-        { shell: true }
+        {
+          shell: true,
+        }
       ); // macos
       spawn(
         `networksetup`,
@@ -157,13 +164,9 @@ const disableOSProxy = () => {
       ); // windows
       break;
     case "darwin":
-      spawn(
-        "networksetup",
-        ["-setsocksfirewallproxystate", "Wi-Fi", "off"],
-        {
-          shell: true,
-        }
-      ); // macos
+      spawn("networksetup", ["-setsocksfirewallproxystate", "Wi-Fi", "off"], {
+        shell: true,
+      }); // macos
       break;
   }
 };
