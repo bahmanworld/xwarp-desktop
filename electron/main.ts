@@ -120,7 +120,14 @@ const enableOSProxy = (port: number = 8086) => {
         { shell: true }
       ); // windows
       proxyEnbaleSpawn.stdout.setEncoding("utf8")
-      proxyEnbaleSpawn.stdout.on('data', console.log)
+      proxyEnbaleSpawn.stdout.on('data', data=>{
+        if (data == "Value ProxyEnable exists, overwrite(Yes/No)?") {
+          console.log('TRUE')
+          proxyEnbaleSpawn?.stdin.write("Y")
+        } else {
+          console.log('FALSE')
+        }
+      })
       proxyInformSpawn = spawn(
         "reg",
         [
