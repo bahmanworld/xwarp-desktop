@@ -214,13 +214,12 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
 ipcMain.on("warp:disconnect", () => {
   disableOSProxy();
   treeKill(child?.pid as number)
-  // child?.kill("SIGINT");
   isConnected = false;
 });
 
 ipcMain.on("app:quit", () => {
   disableOSProxy();
-  child?.kill("SIGINT");
+  treeKill(child?.pid as number)
   app.exit();
 });
 
