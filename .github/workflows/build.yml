@@ -32,14 +32,14 @@ jobs:
             file: XWarp-${{ github.ref_name }}-windows-x64.exe
             warp_zip_file: warp-plus_windows-amd64.zip
             arch: x64
-          - os: ubuntu-latest
-            file: XWarp-${{ github.ref_name }}-linux-arm64.AppImage
-            warp_zip_file: warp-plus_linux-arm64.zip
-            arch: arm64
-          - os: ubuntu-latest
-            file: XWarp-${{ github.ref_name }}-linux-x86_64.AppImage
-            warp_zip_file: warp-plus_linux-amd64.zip
-            arch: x64
+          # - os: ubuntu-latest
+          #   file: XWarp-${{ github.ref_name }}-linux-arm64.AppImage
+          #   warp_zip_file: warp-plus_linux-arm64.zip
+          #   arch: arm64
+          # - os: ubuntu-latest
+          #   file: XWarp-${{ github.ref_name }}-linux-x86_64.AppImage
+          #   warp_zip_file: warp-plus_linux-amd64.zip
+          #   arch: x64
 
     steps:
       - name: Checkout code
@@ -80,28 +80,17 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build Linux-arm64 App
-        if: (matrix.os == 'ubuntu-latest') && (matrix.arch == 'arm64')
-        run: npm run release:linux:arm64
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Build Linux-arm64 App
+      #   if: (matrix.os == 'ubuntu-latest') && (matrix.arch == 'arm64')
+      #   run: npm run release:linux:arm64
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build Linux-x64 App
-        if: (matrix.os == 'ubuntu-latest') && (matrix.arch == 'x64')
-        run: npm run release:linux:x64
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # Upload binaries to release
-      # - name: Upload Release Asset
-      #   uses: svenstaro/upload-release-action@v2
-      #   with:
-      #     repo_token: ${{ secrets.GITHUB_TOKEN }}
-      #     file: ./build/${{ github.ref_name }}/${{ matrix.file }}
-      #     asset_name: ${{ matrix.file }}
-      #     tag: ${{ github.ref }}
-      #     overwrite: true
-      #     file_glob: true
+      # - name: Build Linux-x64 App
+      #   if: (matrix.os == 'ubuntu-latest') && (matrix.arch == 'x64')
+      #   run: npm run release:linux:x64
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/upload-artifact@v4
         with:
