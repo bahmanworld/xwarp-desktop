@@ -109,7 +109,7 @@ const enableOSProxy = (port: number = 8086) => {
       spawnSync(
         `reg add`,
         [
-          "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings",
+          '"HKCUSoftwareMicrosoftWindowsCurrentVersionInternet Settings"',
           "/v ProxyEnable",
           "/t REG_DWORD",
           "/d 1",
@@ -119,7 +119,7 @@ const enableOSProxy = (port: number = 8086) => {
       spawnSync(
         "reg add",
         [
-          "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings",
+          '"HKCUSoftwareMicrosoftWindowsCurrentVersionInternet Settings"',
           "/v ProxyServer",
           "/t REG_SZ",
           `/d 127.0.0.1:${port}`,
@@ -148,7 +148,7 @@ const disableOSProxy = () => {
       spawnSync(
         `reg add`,
         [
-          "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings",
+          '"HKCUSoftwareMicrosoftWindowsCurrentVersionInternet Settings"',
           "/v ProxyEnable",
           "/t REG_DWORD",
           "/d 0",
@@ -197,12 +197,12 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
 
   child.on("error", (e) => {
     child?.kill();
-    process.kill(child?.pid as number)
+    process.kill(child?.pid as number);
   });
 
   child.stderr.on("data", () => {
     child?.kill();
-    process.kill(child?.pid as number)
+    process.kill(child?.pid as number);
     console.log("error");
   });
 });
@@ -210,14 +210,14 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
 ipcMain.on("warp:disconnect", () => {
   disableOSProxy();
   child?.kill();
-  process.kill(child?.pid as number)
+  process.kill(child?.pid as number);
   isConnected = false;
 });
 
 ipcMain.on("app:quit", () => {
   disableOSProxy();
   child?.kill();
-  process.kill(child?.pid as number)
+  process.kill(child?.pid as number);
   app.exit();
 });
 
