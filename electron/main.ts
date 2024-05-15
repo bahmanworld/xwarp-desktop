@@ -119,15 +119,17 @@ const enableOSProxy = (port: number = 8086) => {
         ],
         { shell: true }
       ); // windows
-      proxyEnbaleSpawn.stdout.setEncoding("utf8")
-      proxyEnbaleSpawn.stdout.on('data', data=>{
-        if (data == "Value ProxyEnable exists, overwrite(Yes/No)?") {
-          console.log('TRUE')
-          proxyEnbaleSpawn?.stdin.write("Y")
+      proxyEnbaleSpawn.stdout.setEncoding("utf8");
+      proxyEnbaleSpawn.stdout.on("data", (data: string) => {
+        if (
+          data.trim().includes("Value ProxyEnable exists, overwrite(Yes/No)?")
+        ) {
+          console.log("TRUE");
+          proxyEnbaleSpawn?.stdin.write("Y");
         } else {
-          console.log('FALSE')
+          console.log("FALSE");
         }
-      })
+      });
       proxyInformSpawn = spawn(
         "reg",
         [
@@ -138,17 +140,13 @@ const enableOSProxy = (port: number = 8086) => {
         ],
         { shell: true }
       ); // windows
-      proxyInformSpawn.stdout.setEncoding("utf8")
-      proxyInformSpawn.stdout.on('data', console.log)
+      proxyInformSpawn.stdout.setEncoding("utf8");
+      proxyInformSpawn.stdout.on("data", console.log);
       break;
     case "darwin":
-      spawn(
-        "networksetup",
-        ["-setsocksfirewallproxystate", "Wi-Fi", "on"],
-        {
-          shell: true,
-        }
-      ); // macos
+      spawn("networksetup", ["-setsocksfirewallproxystate", "Wi-Fi", "on"], {
+        shell: true,
+      }); // macos
       spawn(
         `networksetup`,
         ["-setsocksfirewallproxy", "Wi-Fi", `127.0.0.1 ${port}`],
