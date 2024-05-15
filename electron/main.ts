@@ -16,6 +16,7 @@ import {
 } from "child_process";
 import { Storage } from "./Storage";
 import { download } from "./utils";
+import treeKill from 'tree-kill'
 import fs from "fs";
 
 process.env.DIST = path.join(__dirname, "../dist");
@@ -212,7 +213,8 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
 
 ipcMain.on("warp:disconnect", () => {
   disableOSProxy();
-  child?.kill("SIGINT");
+  treeKill(child?.pid as number)
+  // child?.kill("SIGINT");
   isConnected = false;
 });
 
