@@ -103,13 +103,12 @@ type SettingsArgs = {
   gool: boolean;
 };
 
-let proxyEnbaleSpawn: ChildProcessWithoutNullStreams | null = null;
-let proxyInformSpawn: ChildProcessWithoutNullStreams | null = null;
+let proxySpawn: ChildProcessWithoutNullStreams | null = null;
 
 const enableOSProxy = (port: number = 8086) => {
   switch (process.platform) {
     case "win32":
-      proxyEnbaleSpawn = spawn(
+      proxySpawn = spawn(
         `reg`,
         [
           'add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings"',
@@ -119,18 +118,13 @@ const enableOSProxy = (port: number = 8086) => {
         ],
         { shell: true }
       ); // windows
-      proxyEnbaleSpawn.stdout.setEncoding("utf8");
-      proxyEnbaleSpawn.stdout.on("data", (data: string) => {
-        if (
-          data.trim().includes("Value ProxyEnable exists, overwrite(Yes/No)?")
-        ) {
-          console.log("TRUE");
-          proxyEnbaleSpawn?.stdin.write("Y");
-        } else {
-          console.log("FALSE");
+      proxySpawn.stdout.setEncoding("utf8");
+      proxySpawn.stdout.on("data", (data: string) => {
+        if (data.includes("Value ProxyEnable exists, overwrite(Yes/No)?")) {
+          proxySpawn?.stdin.write("Yes");
         }
       });
-      proxyInformSpawn = spawn(
+      proxySpawn = spawn(
         "reg",
         [
           'add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings"',
@@ -140,8 +134,12 @@ const enableOSProxy = (port: number = 8086) => {
         ],
         { shell: true }
       ); // windows
-      proxyInformSpawn.stdout.setEncoding("utf8");
-      proxyInformSpawn.stdout.on("data", console.log);
+      proxySpawn.stdout.setEncoding("utf8");
+      proxySpawn.stdout.on("data", (data: string) => {
+        if (data.includes("Value ProxyEnable exists, overwrite(Yes/No)?")) {
+          proxySpawn?.stdin.write("Yes");
+        }
+      });
       break;
     case "darwin":
       spawn("networksetup", ["-setsocksfirewallproxystate", "Wi-Fi", "on"], {
@@ -159,7 +157,7 @@ const enableOSProxy = (port: number = 8086) => {
 const disableOSProxy = () => {
   switch (process.platform) {
     case "win32":
-      spawn(
+      proxySpawn = spawn(
         `reg`,
         [
           'add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings"',
@@ -169,6 +167,12 @@ const disableOSProxy = () => {
         ],
         { shell: true }
       ); // windows
+      proxySpawn.stdout.setEncoding("utf8");
+      proxySpawn.stdout.on("data", (data: string) => {
+        if (data.includes("Value ProxyEnable exists, overwrite(Yes/No)?")) {
+          proxySpawn?.stdin.write("Yes");
+        }
+      });
       break;
     case "darwin":
       spawn("networksetup", ["-setsocksfirewallproxystate", "Wi-Fi", "off"], {
