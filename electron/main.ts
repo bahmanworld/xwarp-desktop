@@ -55,9 +55,6 @@ function createWindow() {
 
   if (process.platform == "win32") {
     win?.setMenu(null);
-    new Tray(
-      nativeImage.createFromPath(path.join(process.env.VITE_PUBLIC, "tray.png"))
-    );
   }
 
   win.webContents.on("did-finish-load", () => {
