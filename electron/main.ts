@@ -6,7 +6,7 @@ import {
   nativeImage,
   shell,
   Tray,
-  dialog
+  dialog,
 } from "electron";
 import path from "node:path";
 import {
@@ -16,8 +16,9 @@ import {
 } from "child_process";
 import { Storage } from "./Storage";
 import { download } from "./utils";
-import treeKill from 'tree-kill'
+import treeKill from "tree-kill";
 import fs from "fs";
+import { MenuItem } from "@blueprintjs/core";
 
 process.env.DIST = path.join(__dirname, "../dist");
 process.env.VITE_PUBLIC = app.isPackaged
@@ -54,18 +55,21 @@ function createWindow() {
 
   if (process.platform == "win32") {
     win?.setMenu(null);
+    new Tray(
+      nativeImage.createFromPath(path.join(process.env.VITE_PUBLIC, "tray.png"))
+    );
   }
 
   win.webContents.on("did-finish-load", () => {
     win?.webContents.send("main-process-message", new Date().toLocaleString());
-    console.log("pid:", process.pid)
-    console.log("ppid:", process.ppid)
+    console.log("pid:", process.pid);
+    console.log("ppid:", process.ppid);
   });
 
   win?.on("close", (e) => {
     if (isConnected) {
       e.preventDefault();
-      app?.hide();
+      process.platform == "darwin" && app?.hide();
     }
   });
 
@@ -189,10 +193,14 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
   settings.gool && args.push(`--gool`);
   settings.psiphon && args.push(`--cfon --country ${settings.country}`);
 
-  const commander = path.join(process.env.VITE_PUBLIC, "bin", `warp-plus${process.platform === 'win32' ? '.exe' : ''}`);
+  const commander = path.join(
+    process.env.VITE_PUBLIC,
+    "bin",
+    `warp-plus${process.platform === "win32" ? ".exe" : ""}`
+  );
   console.log(commander);
   child = spawn(commander, args, { shell: true });
-  console.log("child_pid:", child.pid)
+  console.log("child_pid:", child.pid);
   child.stdout.setEncoding("utf8");
   child.stdout.on("data", (data) => {
     console.log(data);
@@ -210,13 +218,13 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
 
 ipcMain.on("warp:disconnect", () => {
   disableOSProxy();
-  treeKill(child?.pid as number)
+  treeKill(child?.pid as number);
   isConnected = false;
 });
 
 ipcMain.on("app:quit", () => {
   disableOSProxy();
-  treeKill(child?.pid as number)
+  treeKill(child?.pid as number);
   app.exit();
 });
 
