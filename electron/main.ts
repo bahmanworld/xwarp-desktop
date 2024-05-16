@@ -5,7 +5,8 @@ import {
   ipcMain,
   shell,
 } from "electron";
-import path from "node:path";
+import fs from "fs";
+import path from "path";
 import {
   spawn,
   ChildProcessWithoutNullStreams,
@@ -13,7 +14,6 @@ import {
 import { Storage } from "./Storage";
 import { download } from "./utils";
 import treeKill from "tree-kill";
-import fs from "fs";
 
 process.env.DIST = path.join(__dirname, "../dist");
 process.env.VITE_PUBLIC = app.isPackaged
