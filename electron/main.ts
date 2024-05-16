@@ -3,22 +3,17 @@ import {
   BrowserWindow,
   clipboard,
   ipcMain,
-  nativeImage,
   shell,
-  Tray,
-  dialog,
 } from "electron";
 import path from "node:path";
 import {
   spawn,
-  spawnSync,
   ChildProcessWithoutNullStreams,
 } from "child_process";
 import { Storage } from "./Storage";
 import { download } from "./utils";
 import treeKill from "tree-kill";
 import fs from "fs";
-import { MenuItem } from "@blueprintjs/core";
 
 process.env.DIST = path.join(__dirname, "../dist");
 process.env.VITE_PUBLIC = app.isPackaged
