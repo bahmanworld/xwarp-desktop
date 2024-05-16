@@ -12,7 +12,6 @@ import {
   ChildProcessWithoutNullStreams,
 } from "child_process";
 import { Storage } from "./Storage";
-import { download } from "./utils";
 import treeKill from "tree-kill";
 
 process.env.DIST = path.join(__dirname, "../dist");
@@ -75,7 +74,7 @@ function createWindow() {
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
-    win = null;
+    // win = null;
   }
 });
 
@@ -255,16 +254,4 @@ ipcMain.on("settings:delete", (_, key) => {
 
 ipcMain.on("settings:clear", (_) => {
   Storage.instance.clear();
-});
-
-ipcMain.on("download:start", (_) => {
-  download(
-    "https://github.com/bepass-org/warp-plus/releases/download/v1.1.3/warp-plus_darwin-arm64.zip"
-  )
-    .then(() => {
-      win?.webContents.send("download:done");
-    })
-    .catch(() => {
-      win?.webContents.send("download:error");
-    });
 });

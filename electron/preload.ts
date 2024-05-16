@@ -83,14 +83,4 @@ contextBridge.exposeInMainWorld("electron", {
   openExternalLink: (url: string) => {
     ipcRenderer.send("link:open", url);
   },
-
-  download: (callback: (error: Error | null, finished: boolean) => void) => {
-    ipcRenderer.send("download:start");
-    ipcRenderer.on("download:done", (_) => {
-      callback(null, true);
-    });
-    ipcRenderer.on("download:error", () => {
-      callback(new Error("download field"), false);
-    });
-  },
 });
