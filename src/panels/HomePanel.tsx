@@ -10,7 +10,6 @@ import PackageJSON from "../../package.json";
 import LogsPanel from "./LogsPanel";
 import AboutPanel from "./AboutPanel";
 import React from "react";
-import axios from "axios";
 import { useSettings } from "../stores/useSettings";
 
 export const countryFlags = [
