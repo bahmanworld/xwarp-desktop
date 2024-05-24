@@ -36,11 +36,13 @@ export const useWarp = create<WarpProps>()((set, get) => ({
       useSettings.getState().getSettings(),
       (_, connected) => {
         set({ connected: connected, connecting: false });
-        fetch("https://ifconfig.co/json")
-          .then((res) => res.json())
-          .then((res) => {
-            set({ ifconfig: res as IFConfig });
-          });
+        setTimeout(() => {
+          fetch("https://ifconfig.co/json")
+            .then((res) => res.json())
+            .then((res) => {
+              set({ ifconfig: res as IFConfig });
+            });
+        }, 1000);
       }
     );
   },
