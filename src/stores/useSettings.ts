@@ -7,7 +7,7 @@ export const Countries = [
   { id: "BR", name: "Brazil" },
   { id: "CA", name: "Canada" },
   { id: "CH", name: "China" },
-  { id: "CZ", name: "Czechia" },
+  { id: "CZ", name: "Czech Republic" },
   { id: "DE", name: "Germany" },
   { id: "DK", name: "Denmark" },
   { id: "EE", name: "Estonia" },
@@ -40,10 +40,11 @@ type Fields = {
   psiphon: boolean;
   country: string;
   gool: boolean;
+  tun: boolean;
 };
 
 interface ISettings extends Fields {
-  stayOnTop: boolean,
+  stayOnTop: boolean;
   updateStayOnTop: (stay: boolean) => void;
   updateField: (key: keyof Fields, value: typeof key | any) => void;
   getSettings: () => Fields;
@@ -57,6 +58,7 @@ export const useSettings = create<ISettings>()((set, get) => ({
   psiphon: window.electron.settings.get("psiphon") || false,
   country: window.electron.settings.get("country") || "US",
   gool: window.electron.settings.get("gool") || false,
+  tun: window.electron.settings.get("tun") || false,
   stayOnTop: false,
   updateStayOnTop: (stay) => {
     set({ stayOnTop: stay });
@@ -76,7 +78,8 @@ export const useSettings = create<ISettings>()((set, get) => ({
       port: get().port,
       psiphon: get().psiphon,
       country: get().country,
-      gool: get().gool
+      gool: get().gool,
+      tun: get().tun,
     };
   },
   resetSettings: () => {

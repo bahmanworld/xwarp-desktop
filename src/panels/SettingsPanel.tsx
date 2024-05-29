@@ -205,6 +205,32 @@ const SettingsPanel = () => {
               </div>
             </label>
           </div>
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 2,
+              marginTop: 10,
+            }}
+          >
+            <div>
+              <Checkbox
+                id="tun"
+                checked={settings.tun}
+                onChange={(e) => {
+                  settings.updateField("tun", e.target.checked);
+                }}
+              />
+            </div>
+            <label htmlFor="tun">
+              <div style={{ fontWeight: "bold" }}>TUN Mode</div>
+              <div style={{ fontSize: 9, opacity: 0.5 }}>
+                Enable TUN Mode
+              </div>
+            </label>
+          </div>
         </div>
       </div>
     </div>

@@ -90,15 +90,6 @@ ipcMain.on("link:open", (_, url) => {
   shell.openExternal(url);
 });
 
-type SettingsArgs = {
-  endpoint: string;
-  key: string;
-  port: number;
-  psiphon: boolean;
-  country: string;
-  gool: boolean;
-};
-
 let proxySpawn1: ChildProcessWithoutNullStreams | null = null;
 let proxySpawn2: ChildProcessWithoutNullStreams | null = null;
 let proxySpawn3: ChildProcessWithoutNullStreams | null = null;
@@ -174,6 +165,16 @@ const disableOSProxy = () => {
   }
 };
 
+type SettingsArgs = {
+  endpoint: string;
+  key: string;
+  port: number;
+  psiphon: boolean;
+  country: string;
+  gool: boolean;
+  tun: boolean
+};
+
 ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
   console.log("connecting...");
   isConnected = true;
@@ -182,8 +183,9 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
   settings.endpoint && args.push(`-e ${settings.endpoint}`);
   settings.port && args.push(`-b 127.0.0.1:${settings.port}`);
   settings.key && args.push(`-k ${settings.key}`);
-  settings.gool && args.push(`--gool`);
   settings.psiphon && args.push(`--cfon --country ${settings.country}`);
+  settings.gool && args.push(`--gool`);
+  settings.tun && args.push(`--tun-experimental`);
 
   const commander = path.join(
     process.env.VITE_PUBLIC,
