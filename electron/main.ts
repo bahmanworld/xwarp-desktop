@@ -176,6 +176,7 @@ const disableOSProxy = () => {
 
 ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
   console.log("connecting...");
+  isConnected = true;
   const args = [];
   args.push(`--cache-dir ${cacheDir}`);
   settings.endpoint && args.push(`-e ${settings.endpoint}`);
@@ -202,15 +203,14 @@ ipcMain.on("warp:connect", (_, settings: SettingsArgs) => {
     if (connected) {
       enableOSProxy(settings.port || 8086);
       win?.webContents.send("warp:connected", true);
-      isConnected = true;
     }
   });
 });
 
 ipcMain.on("warp:disconnect", () => {
+  isConnected = false;
   disableOSProxy();
   treeKill(child?.pid as number);
-  isConnected = false;
 });
 
 ipcMain.on("app:quit", () => {
