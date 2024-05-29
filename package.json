@@ -1,8 +1,8 @@
 {
   "name": "xwarp-desktop",
   "private": true,
-  "version": "1.2.1",
-  "warp_plus_version": "v1.2.1",
+  "version": "1.2.2",
+  "warp_plus_version": "v1.2.2",
   "warp_plus_repo": "https://github.com/bepass-org/warp-plus",
   "appId": "bahman.world.xwarp-desktop",
   "main": "dist-electron/main.js",
