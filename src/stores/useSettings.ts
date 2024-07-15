@@ -91,6 +91,7 @@ export const useSettings = create<ISettings>()((set, get) => ({
       psiphon: false,
       country: "US",
       gool: false,
+      tun: false
     });
   },
 }));
